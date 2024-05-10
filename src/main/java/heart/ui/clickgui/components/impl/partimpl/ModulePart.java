@@ -2,10 +2,12 @@ package heart.ui.clickgui.components.impl.partimpl;
 
 import heart.modules.Module;
 import heart.modules.settings.impl.BoolSetting;
+import heart.modules.settings.impl.DoubleSetting;
 import heart.modules.settings.impl.IntSetting;
 import heart.modules.settings.impl.ModeSetting;
 import heart.ui.clickgui.components.impl.Part;
 import heart.ui.clickgui.components.impl.partimpl.settings.BooleanSettingPart;
+import heart.ui.clickgui.components.impl.partimpl.settings.DoubleSettingPart;
 import heart.ui.clickgui.components.impl.partimpl.settings.IntSettingPart;
 import heart.ui.clickgui.components.impl.partimpl.settings.ModeSettingPart;
 import heart.util.animation.DynamicAnimation;
@@ -57,6 +59,9 @@ public class ModulePart extends Part {
                     break;
                 case "IntSetting":
                     subParts.add(new IntSettingPart((IntSetting) value));
+                    break;
+                case "DoubleSetting":
+                    subParts.add(new DoubleSettingPart((DoubleSetting) value));
                     break;
             }
         });

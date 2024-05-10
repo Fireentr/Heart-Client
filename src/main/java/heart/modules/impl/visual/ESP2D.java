@@ -2,6 +2,7 @@ package heart.modules.impl.visual;
 
 import heart.modules.Category;
 import heart.modules.Module;
+import heart.modules.settings.impl.DoubleSetting;
 import heart.modules.settings.impl.IntSetting;
 
 public class ESP2D extends Module {
@@ -11,4 +12,5 @@ public class ESP2D extends Module {
     }
 
     IntSetting test = new IntSetting("hiii", "yup", 5, 100, 50);
+    DoubleSetting dtest = new DoubleSetting("hiiidfg", "yupfsd", 3, 10, 4,  10);
 }

@@ -1,6 +1,6 @@
 package heart.ui.clickgui.components.impl.partimpl.settings;
 
-import heart.modules.settings.impl.IntSetting;
+import heart.modules.settings.impl.DoubleSetting;
 import heart.ui.clickgui.components.impl.Part;
 import heart.util.CFontRenderer;
 import heart.util.animation.DynamicAnimation;
@@ -12,7 +12,7 @@ import org.lwjgl.input.Mouse;
 import java.awt.*;
 import java.io.IOException;
 
-public class IntSettingPart extends Part {
+public class DoubleSettingPart extends Part {
 
     RoundedRectShader roundedRectShader;
     DynamicAnimation dynamicAnimation = new DynamicAnimation(EasingStyle.ExpoOut, 300);
@@ -26,15 +26,15 @@ public class IntSettingPart extends Part {
         }
     }
 
-    private final IntSetting intSetting;
+    private final DoubleSetting doubleSetting;
 
     private boolean hovered = false;
     private boolean selecting = false;
 
-    public IntSettingPart(IntSetting intSetting) {
+    public DoubleSettingPart(DoubleSetting doubleSetting) {
         super(20);
-        this.intSetting = intSetting;
-        dynamicAnimation.snapTo(getAsPercentile());
+        this.doubleSetting = doubleSetting;
+        dynamicAnimation.snapTo((float) getAsPercentile());
     }
 
 
@@ -47,11 +47,11 @@ public class IntSettingPart extends Part {
         roundedRectShader.drawRectWithShader((float) (x + dynamicAnimation.getValue() + 5), y + 11.8f, 3, 3, 0, 3, new Color(0xff8d0528), new Color(0xff8d0528));
 
         GlStateManager.color(255, 255, 255);
-        smallFontRenderer.drawString(intSetting.getName(), x + 5, y + 1.5f, 0xff454545);
+        smallFontRenderer.drawString(doubleSetting.getName(), x + 5, y + 1.5f, 0xff454545);
         GlStateManager.color(255, 255, 255);
-        smallFontRenderer.drawCenteredString(Integer.toString(intSetting.getValue()), x + 117, y + 9, 0xff454545);
+        smallFontRenderer.drawCenteredString(Double.toString(doubleSetting.getValue()), x + 117, y + 9, 0xff454545);
 
-        dynamicAnimation.setTarget(getAsPercentile());
+        dynamicAnimation.setTarget((float) getAsPercentile());
 
         if (selecting && Mouse.isButtonDown(0)) {
             setValue(mouseX - (x + 5));
@@ -69,14 +69,14 @@ public class IntSettingPart extends Part {
 
     @Override
     public boolean shouldShow() {
-        return intSetting.shouldShow();
+        return doubleSetting.shouldShow();
     }
 
-    public float getAsPercentile(){
-        return ((float) (intSetting.getValue() - intSetting.getMin()) / (intSetting.getMax() - intSetting.getMin())) * 100;
+    public double getAsPercentile(){
+        return (doubleSetting.getValue() - doubleSetting.getMin()) / (doubleSetting.getMax() - doubleSetting.getMin()) * 100;
     }
 
     public void setValue(float value) {
-        intSetting.setValue((int) (value/100 * (intSetting.getMax() - intSetting.getMin()) + intSetting.getMin()));
+        doubleSetting.setValue((value/100 * (doubleSetting.getMax() - doubleSetting.getMin()) + doubleSetting.getMin()));
     }
 }

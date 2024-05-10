@@ -46,7 +46,6 @@ public class ModeSettingPart extends Part {
 
         roundedRectShader.drawRectWithShader(x + 2, y + 20, 120, (float) dynamicAnimation.getValue() - 5, 0, 3, new Color(20, 20, 20, 255), new Color(30, 30, 30, 255));
 
-
         if(dynamicAnimation.getValue() > 2){
 
             int i = 0;
@@ -78,7 +77,6 @@ public class ModeSettingPart extends Part {
             int i = 1;
             for (Mode m : modeSetting.getModes()) {
                 if(x > xpos && x < xpos + 124 && y > ypos + i * 20 && y < ypos + i * 20 + 20) {
-
                     for(Mode mo : modeSetting.getModes()) {
                         if(mo.isEnabled()){
                             mo.setEnabled(false);
@@ -87,7 +85,6 @@ public class ModeSettingPart extends Part {
                             modeSetting.setSelected(m);
                         }
                     }
-
                     modeSetting.setSelected(m);
                     System.out.println(m.getName());
                 }
