@@ -33,7 +33,7 @@ public class Module {
     public void initmodule(){
         for(Field f : this.getClass().getDeclaredFields()){
             f.setAccessible(true);
-            if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(DoubleSetting.class)  || f.getType().isAssignableFrom(ColorSetting.class) ){
+            if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(DoubleSetting.class)  || f.getType().isAssignableFrom(ColorSetting.class) || f.getType().isAssignableFrom(EnumSetting.class)){
                 Setting setting;
                 try {
                     setting = (Setting) f.get(this);
@@ -112,7 +112,7 @@ public class Module {
                 for (Mode mode : modes) {
                     for(Field f : mode.getClass().getDeclaredFields()){
                         f.setAccessible(true);
-                        if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(DoubleSetting.class) || f.getType().isAssignableFrom(ColorSetting.class)){
+                        if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(DoubleSetting.class) || f.getType().isAssignableFrom(ColorSetting.class)  || f.getType().isAssignableFrom(EnumSetting.class)){
                             Setting setting;
                             try {
                                 setting = (Setting) f.get(mode);

@@ -21,7 +21,7 @@ public class ModulePart extends Part {
 
     ArrayList<Part> subParts = new ArrayList<>();
 
-    DynamicAnimation dynamicAnimation = new DynamicAnimation(EasingStyle.ExpoOut, 300);
+    DynamicAnimation dynamicAnimation = new DynamicAnimation(EasingStyle.ExpoOut, 500);
     DynamicAnimation enableAnimation = new DynamicAnimation(EasingStyle.ExpoOut, 600);
 
     {
@@ -59,6 +59,9 @@ public class ModulePart extends Part {
                     break;
                 case "ColorSetting":
                     subParts.add(new ColorSettingPart((ColorSetting) value));
+                    break;
+                case "EnumSetting":
+                    subParts.add(new EnumSettingPart<>((EnumSetting) value));
                     break;
             }
         });

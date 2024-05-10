@@ -65,7 +65,7 @@ public class ColorSettingPart extends Part {
         height = (int) dynamicAnimationOpen.getValue() + 20;
         if(dynamicAnimationOpen.getValue() > 5) {
 
-            roundedRectShader.drawRectWithShader(x + 2, y, 120, height - 2, 0, 1, new Color(14, 14, 14), new Color(14, 14, 14));
+            roundedRectShader.drawRectWithShader(x + 2, y, 120, height - 2, 0, 1, new Color(20, 20, 20, 255), new Color(20, 20, 20, 255));
 
             //hue
             roundedRectShader.drawRectWithShader(x + 5, (float) (y + (19) * (dynamicAnimationOpen.getValue() / 40)), 100, 0.2f, 0, 1, new Color(30, 30, 30), new Color(30, 30, 30));
@@ -175,7 +175,7 @@ public class ColorSettingPart extends Part {
     }
 
     public void setValue(float hue, float saturation, float brightness) {
-        colorSetting.setValue(new Color(Color.HSBtoRGB(Math.min(Math.max(hue/100, 0), 0.999f), Math.min(Math.max(saturation/100, 0), 0.999f), Math.min(Math.max(brightness/100, 0), 0.999f))));
+        colorSetting.setValue(new Color(Color.HSBtoRGB(Math.min(Math.max(hue/100, 0), 0.996f), Math.min(Math.max(saturation/100, 0), 0.996f), Math.min(Math.max(brightness/100, 0), 0.996f))));
     }
 
     @Override

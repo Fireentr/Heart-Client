@@ -7,6 +7,7 @@ import heart.modules.Module;
 import heart.modules.settings.Requirement;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.ColorSetting;
+import heart.modules.settings.impl.EnumSetting;
 import heart.util.CFontRenderer;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
@@ -16,6 +17,10 @@ import net.minecraft.client.gui.ScaledResolution;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
+
+enum teste {
+    TEST1, TEST2, TEST3, TEST4, TEST5, TEST6, TEST7, TEST8, TEST9, TEST10;
+}
 
 public class Hud extends Module {
 
@@ -30,9 +35,8 @@ public class Hud extends Module {
     @Override
     public void onEnable() {
         arraylistModules.clear();
-        Heart.getModuleManager().getModules().forEach((key, value) -> {
-            arraylistModules.add(new ArraylistModule(value));
-        });
+        Heart.getModuleManager().getModules().forEach((key, value) -> arraylistModules.add(new ArraylistModule(value))
+        );
         super.onEnable();
     }
 
@@ -43,6 +47,8 @@ public class Hud extends Module {
 
     ColorSetting color1 = new ColorSetting("Theme Color", "Sets the theme color.", new Color(255, 40, 40));
     ColorSetting color2 = new ColorSetting("Accent Color", "Sets the accent color.", new Color(173, 33, 255));
+
+    EnumSetting<teste> testEnumSetting = new EnumSetting<>("testenumop", "da ops", teste.values());
 
     String ClientName = "Heart";
     CFontRenderer fontRenderer = new CFontRenderer(new Font("Arial", Font.PLAIN, 18));
