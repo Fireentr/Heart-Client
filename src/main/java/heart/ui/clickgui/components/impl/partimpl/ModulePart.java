@@ -2,8 +2,10 @@ package heart.ui.clickgui.components.impl.partimpl;
 
 import heart.modules.Module;
 import heart.modules.settings.impl.BoolSetting;
+import heart.modules.settings.impl.ModeSetting;
 import heart.ui.clickgui.components.impl.Part;
 import heart.ui.clickgui.components.impl.partimpl.settings.BooleanSettingPart;
+import heart.ui.clickgui.components.impl.partimpl.settings.ModeSettingPart;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
 import heart.util.shader.impl.RoundedRectShader;
@@ -47,6 +49,9 @@ public class ModulePart extends Part {
                     break;
                 case "BoolSetting":
                     subParts.add(new BooleanSettingPart((BoolSetting) value));
+                    break;
+                case "ModeSetting":
+                    subParts.add(new ModeSettingPart((ModeSetting) value));
                     break;
             }
         });
@@ -93,16 +98,21 @@ public class ModulePart extends Part {
         hoveringModule = mouseX > x + 14 && mouseX < x + 111 && mouseY > y && mouseY < y + 20;
 
         int i = 0;
+        int prev = 20;
         for (Part part : subParts) {
             if(dynamicAnimation.getValue() > 25 || open2){
-                part.drawPart(x, (int) (y + (part.height + i) * ((dynamicAnimation.getValue()) / 100)), mouseX, mouseY);
+                part.drawPart(x, (int) (y + (prev + i) * ((dynamicAnimation.getValue()) / 100)), mouseX, mouseY);
+                prev = part.height;
             }
-            i += part.height * dynamicAnimation.getValue()/ 100;
+            i += (int) (part.height * dynamicAnimation.getValue()/ 100);
             dynamicAnimation.setTarget(100);
         }
         height = 20 + (int) ((dynamicAnimation.getValue()/100)* i);
         if (!open2 || !open){
             dynamicAnimation.setTarget(0);
+            for (Part part : subParts){
+                part.forceclose();
+            }
         }
 
 

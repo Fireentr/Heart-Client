@@ -26,7 +26,7 @@ public class Component {
     private final String label;
     private final char icon;
     private int x, y, w, h, xOff, yOff;
-    public CFontRenderer fontRenderer = new CFontRenderer(new Font(new ResourceLocation("Product Sans").getResourcePath(), Font.PLAIN, 17));
+    public CFontRenderer fontRenderer = new CFontRenderer(new Font(new ResourceLocation("Product Sans").getResourcePath(), Font.PLAIN, 16));
     public boolean open = false;
     boolean move = false;
     public ArrayList<Part> parts = new ArrayList<>();

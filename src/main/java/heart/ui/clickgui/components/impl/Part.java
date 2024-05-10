@@ -12,7 +12,7 @@ public class Part {
     public CategoryCompontenent categoryCompontenent;
     public int height;
 
-    public CFontRenderer fontRenderer = new CFontRenderer(new Font(new ResourceLocation("Product Sans").getResourcePath(), Font.PLAIN, 17));
+    public CFontRenderer fontRenderer = new CFontRenderer(new Font(new ResourceLocation("Product Sans").getResourcePath(), Font.PLAIN, 16));
 
     int yOffset = 0;
 
@@ -32,6 +32,10 @@ public class Part {
     }
 
     public void onMouseClick(int x, int y, int button) {
+
+    }
+
+    public void forceclose(){
 
     }
 
