@@ -4,6 +4,7 @@ import heart.Heart;
 import heart.events.impl.Render2DEvent;
 import heart.events.impl.TickEvent;
 import heart.modules.settings.Setting;
+import net.minecraft.client.Minecraft;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -14,6 +15,8 @@ public class Mode {
     private final String name;
     private final String description;
     private boolean enabled = false;
+
+    public Minecraft mc = Minecraft.getMinecraft();
 
     public Mode(String name, String description) {
         this.name = name;
