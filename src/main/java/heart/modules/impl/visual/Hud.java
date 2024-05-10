@@ -6,18 +6,16 @@ import heart.modules.Category;
 import heart.modules.Module;
 import heart.modules.settings.Requirement;
 import heart.modules.settings.impl.BoolSetting;
+import heart.modules.settings.impl.ColorSetting;
 import heart.util.CFontRenderer;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
-import heart.util.shader.impl.RoundedRectShader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Hud extends Module {
 
@@ -43,6 +41,9 @@ public class Hud extends Module {
     BoolSetting wdshow = new BoolSetting("WHEEEdfsdfW", "fre", false);
     BoolSetting wsdfasdhow = new BoolSetting("WHdsfsfddsfEEEW", "fre", false);
 
+    ColorSetting color1 = new ColorSetting("Theme Color", "Sets the theme color.", new Color(255, 40, 40));
+    ColorSetting color2 = new ColorSetting("Accent Color", "Sets the accent color.", new Color(173, 33, 255));
+
     String ClientName = "Heart";
     CFontRenderer fontRenderer = new CFontRenderer(new Font("Arial", Font.PLAIN, 18));
     public void setClientName(String ClientName) {
@@ -52,7 +53,8 @@ public class Hud extends Module {
 
     @Override
     public void onRender2D(Render2DEvent e) {
-        fontRenderer.drawStringWithShadow(ClientName.replace("&", "§"), 2, 2, Color.WHITE.getRGB());
+        fontRenderer.drawStringWithShadow(ClientName.replace("&", "§"), 2, 2, color1.getValue().getRGB());
+        fontRenderer.drawStringWithShadow("We testin", 2, 2 + 30, color2.getValue().getRGB());
 
         float i = 0;
         for(ArraylistModule module : arraylistModules) {

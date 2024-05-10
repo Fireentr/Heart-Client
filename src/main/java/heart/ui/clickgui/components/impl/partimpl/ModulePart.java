@@ -1,15 +1,9 @@
 package heart.ui.clickgui.components.impl.partimpl;
 
 import heart.modules.Module;
-import heart.modules.settings.impl.BoolSetting;
-import heart.modules.settings.impl.DoubleSetting;
-import heart.modules.settings.impl.IntSetting;
-import heart.modules.settings.impl.ModeSetting;
+import heart.modules.settings.impl.*;
 import heart.ui.clickgui.components.impl.Part;
-import heart.ui.clickgui.components.impl.partimpl.settings.BooleanSettingPart;
-import heart.ui.clickgui.components.impl.partimpl.settings.DoubleSettingPart;
-import heart.ui.clickgui.components.impl.partimpl.settings.IntSettingPart;
-import heart.ui.clickgui.components.impl.partimpl.settings.ModeSettingPart;
+import heart.ui.clickgui.components.impl.partimpl.settings.*;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
 import heart.util.shader.impl.RoundedRectShader;
@@ -63,6 +57,9 @@ public class ModulePart extends Part {
                 case "DoubleSetting":
                     subParts.add(new DoubleSettingPart((DoubleSetting) value));
                     break;
+                case "ColorSetting":
+                    subParts.add(new ColorSettingPart((ColorSetting) value));
+                    break;
             }
         });
     }
@@ -80,20 +77,16 @@ public class ModulePart extends Part {
                 module.setEnabled(!module.isEnabled());
             }
         }
-        if(button == 1){
-            if(hoveringModule){
-                open2 = !open2;
-                dynamicAnimation.setTarget(open2 ? 100 : 0);
-                for (Part part : subParts) {
-                    part.open = open2;
-                }
-            }
-        }
-
         if(open2){
             for (Part part : subParts) {
                 if(part.shouldShow())
                     part.onMouseClick(x, y, button);
+            }
+        }
+        if(button == 1){
+            if(hoveringModule){
+                open2 = !open2;
+                dynamicAnimation.setTarget(open2 ? 100 : 0);
             }
         }
 
@@ -111,7 +104,7 @@ public class ModulePart extends Part {
         int i = 0;
         for (Part part : subParts) {
             if(part.shouldShow()) {
-                if (dynamicAnimation.getValue() > 25 || open2) {
+                if (dynamicAnimation.getValue() > 10 || open2) {
                     part.drawPart(x, (int) (y + (20 + i) * ((dynamicAnimation.getValue()) / 100)), mouseX, mouseY);
                 }
                 i += (int) (part.height * dynamicAnimation.getValue() / 100);
