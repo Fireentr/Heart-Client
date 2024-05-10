@@ -1,15 +1,12 @@
 package heart.ui.clickgui.components.impl;
 
 import heart.util.CFontRenderer;
-import heart.util.animation.DynamicAnimation;
-import heart.util.animation.EasingStyle;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
 public class Part {
 
-    public CategoryCompontenent categoryCompontenent;
     public int height;
 
     public CFontRenderer fontRenderer = new CFontRenderer(new Font(new ResourceLocation("Product Sans").getResourcePath(), Font.PLAIN, 16));
@@ -37,6 +34,10 @@ public class Part {
 
     public void forceclose(){
 
+    }
+
+    public boolean shouldShow(){
+        return true;
     }
 
 }

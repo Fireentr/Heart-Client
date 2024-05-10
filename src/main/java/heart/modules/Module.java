@@ -4,6 +4,7 @@ import heart.Heart;
 import heart.events.impl.Render2DEvent;
 import heart.events.impl.TickEvent;
 import heart.modules.modes.Mode;
+import heart.modules.settings.Requirement;
 import heart.modules.settings.Setting;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.IntSetting;
@@ -36,7 +37,6 @@ public class Module {
         for(Field f : this.getClass().getDeclaredFields()){
             f.setAccessible(true);
             if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class)){
-                System.out.println(f.getName());
                 Setting setting;
                 try {
                     setting = (Setting) f.get(this);
@@ -45,12 +45,9 @@ public class Module {
                 }
                 if (setting != null) {
                     settings.put(f.getName(), setting);
-                }else{
-                    System.out.println("Setting is null");
                 }
             }
         }
-        System.out.println(settings.values().size());
     }
 
 
@@ -114,6 +111,24 @@ public class Module {
                 modes.add(clazz.newInstance());
             }
             settings.put("mode", new ModeSetting("Mode", "Mode", modes));
+            if(!modes.isEmpty()){
+                for (Mode mode : modes) {
+                    for(Field f : mode.getClass().getDeclaredFields()){
+                        f.setAccessible(true);
+                        if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class)){
+                            Setting setting;
+                            try {
+                                setting = (Setting) f.get(mode);
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (setting != null) {
+                                settings.put(f.getName(), setting.addRequirement(new Requirement(settings.get("mode"), mode)));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }

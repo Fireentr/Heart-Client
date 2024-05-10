@@ -82,7 +82,8 @@ public class ModulePart extends Part {
 
         if(open2){
             for (Part part : subParts) {
-                part.onMouseClick(x, y, button);
+                if(part.shouldShow())
+                    part.onMouseClick(x, y, button);
             }
         }
 
@@ -98,14 +99,13 @@ public class ModulePart extends Part {
         hoveringModule = mouseX > x + 14 && mouseX < x + 111 && mouseY > y && mouseY < y + 20;
 
         int i = 0;
-        int prev = 20;
         for (Part part : subParts) {
-            if(dynamicAnimation.getValue() > 25 || open2){
-                part.drawPart(x, (int) (y + (prev + i) * ((dynamicAnimation.getValue()) / 100)), mouseX, mouseY);
-                prev = part.height;
+            if(part.shouldShow()) {
+                if (dynamicAnimation.getValue() > 25 || open2) {
+                    part.drawPart(x, (int) (y + (20 + i) * ((dynamicAnimation.getValue()) / 100)), mouseX, mouseY);
+                }
+                i += (int) (part.height * dynamicAnimation.getValue() / 100);
             }
-            i += (int) (part.height * dynamicAnimation.getValue()/ 100);
-            dynamicAnimation.setTarget(100);
         }
         height = 20 + (int) ((dynamicAnimation.getValue()/100)* i);
         if (!open2 || !open){

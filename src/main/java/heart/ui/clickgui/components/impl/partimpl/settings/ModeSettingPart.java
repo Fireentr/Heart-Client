@@ -1,10 +1,8 @@
 package heart.ui.clickgui.components.impl.partimpl.settings;
 
 import heart.modules.modes.Mode;
-import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.ModeSetting;
 import heart.ui.clickgui.components.impl.Part;
-import heart.util.ColorUtil;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
 import heart.util.shader.impl.RoundedRectShader;
@@ -102,5 +100,10 @@ public class ModeSettingPart extends Part {
     @Override
     public void forceclose(){
         open = false;
+    }
+
+    @Override
+    public boolean shouldShow() {
+        return modeSetting.shouldShow();
     }
 }

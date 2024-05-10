@@ -49,9 +49,13 @@ public class BooleanSettingPart extends Part {
     @Override
     public void onMouseClick(int x, int y, int button) {
         if(hovered && button == 0) {
-            System.out.println(boolSetting.getValue());
             boolSetting.setValue(!boolSetting.getValue());
         }
         super.onMouseClick(x, y, button);
+    }
+
+    @Override
+    public boolean shouldShow() {
+        return boolSetting.shouldShow();
     }
 }

@@ -3,10 +3,11 @@ package heart.modules.modes;
 import heart.Heart;
 import heart.events.impl.Render2DEvent;
 import heart.events.impl.TickEvent;
-import heart.modules.Category;
-import heart.modules.settings.impl.ModeSetting;
+import heart.modules.settings.Setting;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.LinkedHashMap;
 
 
 public class Mode {
@@ -56,4 +57,7 @@ public class Mode {
     public void onRender2D(Render2DEvent e){
 
     }
+
+
+    public LinkedHashMap<String, Setting> settings = new LinkedHashMap<>();
 }

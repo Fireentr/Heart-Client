@@ -1,5 +1,7 @@
 package net.minecraft.client.gui;
 
+import heart.util.animation.DynamicAnimation;
+import heart.util.animation.EasingStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
@@ -18,6 +20,8 @@ public class GuiButton extends Gui
     public boolean enabled;
     public boolean visible;
     protected boolean hovered;
+
+    private DynamicAnimation anim = new DynamicAnimation(EasingStyle.ExpoOut, 500);
 
     public GuiButton(int buttonId, int x, int y, String buttonText)
     {
@@ -66,8 +70,21 @@ public class GuiButton extends Gui
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + i * 20, this.width / 2, this.height);
-            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+
+            anim.setTarget((float) (hovered ? 1.0 : 0.0));
+
+            GlStateManager.pushMatrix();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, (float) anim.getValue());
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + 2 * 20, this.width / 2, this.height);
+            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + 2 * 20, this.width / 2, this.height);
+            GlStateManager.popMatrix();
+
+            GlStateManager.pushMatrix();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1 - (float) anim.getValue());
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + 1 * 20, this.width / 2, this.height);
+            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + 1 * 20, this.width / 2, this.height);
+            GlStateManager.popMatrix();
+
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
 

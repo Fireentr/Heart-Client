@@ -2,6 +2,7 @@ package heart.modules.impl.movement.speed.modes;
 
 import heart.events.impl.TickEvent;
 import heart.modules.modes.Mode;
+import heart.modules.settings.impl.BoolSetting;
 import heart.util.MotionUtil;
 import net.minecraft.client.Minecraft;
 import org.greenrobot.eventbus.Subscribe;
@@ -11,6 +12,8 @@ public class BunnyHop extends Mode {
     public BunnyHop() {
         super("BunnyHop", "Vanilla BHop");
     }
+
+    BoolSetting test = new BoolSetting("Test", "TESING", false);
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTick(TickEvent e){

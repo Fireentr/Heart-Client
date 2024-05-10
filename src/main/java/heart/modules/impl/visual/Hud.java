@@ -4,6 +4,7 @@ import heart.Heart;
 import heart.events.impl.Render2DEvent;
 import heart.modules.Category;
 import heart.modules.Module;
+import heart.modules.settings.Requirement;
 import heart.modules.settings.impl.BoolSetting;
 import heart.util.CFontRenderer;
 import heart.util.animation.DynamicAnimation;
@@ -38,7 +39,7 @@ public class Hud extends Module {
     }
 
     BoolSetting test = new BoolSetting("Test", "TESING", false);
-    BoolSetting whow = new BoolSetting("WHEEEW", "fre", false);
+    BoolSetting whow = (BoolSetting) new BoolSetting("WHEEEW", "fre", false).addRequirement(new Requirement(test, false));
     BoolSetting wdshow = new BoolSetting("WHEEEdfsdfW", "fre", false);
     BoolSetting wsdfasdhow = new BoolSetting("WHdsfsfddsfEEEW", "fre", false);
 

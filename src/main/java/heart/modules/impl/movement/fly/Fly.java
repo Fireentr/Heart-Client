@@ -6,5 +6,6 @@ import heart.modules.Module;
 public class Fly extends Module {
     public Fly() {
         super("Fly", "Pretty self-explanatory", Category.MOVEMENT);
+        initmodule();
     }
 }
