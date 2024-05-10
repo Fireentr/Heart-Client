@@ -15,7 +15,6 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Module {
     private final String name;
@@ -36,7 +35,7 @@ public class Module {
     public void initmodule(){
         for(Field f : this.getClass().getDeclaredFields()){
             f.setAccessible(true);
-            if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class)){
+            if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(IntSetting.class)){
                 Setting setting;
                 try {
                     setting = (Setting) f.get(this);
@@ -115,7 +114,7 @@ public class Module {
                 for (Mode mode : modes) {
                     for(Field f : mode.getClass().getDeclaredFields()){
                         f.setAccessible(true);
-                        if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class)){
+                        if(f.getType().isAssignableFrom(BoolSetting.class) || f.getType().isAssignableFrom(IntSetting.class) || f.getType().isAssignableFrom(IntSetting.class)){
                             Setting setting;
                             try {
                                 setting = (Setting) f.get(mode);

@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class BooleanSettingPart extends Part {
 
@@ -38,7 +37,7 @@ public class BooleanSettingPart extends Part {
 
     @Override
     public void drawPart(int x, int y, int mouseX, int mouseY) {
-        dynamicAnimation.setTarget((float) (boolSetting.getValue() ? 1.0 : 0.0));
+        dynamicAnimation.setTarget((float) (boolSetting.getValue() ? 0.0 : 1.0));
         hovered = mouseX > x && mouseX < x + 125 && mouseY > y && mouseY < y + 20;
 
         roundedRectShader.drawRectWithShader(x + 7, y + 6, 6, 6, 1, 3, ColorUtil.mixColor(new Color(20, 20, 20), new Color(0xff8d0528), dynamicAnimation.getValue()), new Color(0x1F1F1F));
