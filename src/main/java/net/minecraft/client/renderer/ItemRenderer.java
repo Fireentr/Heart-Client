@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer;
 
+import heart.Heart;
+import heart.modules.impl.visual.Animations;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -251,14 +253,14 @@ public class ItemRenderer
         }
 
         GlStateManager.translate(0.0F, f2, 0.0F);
-        float f3 = 1.0F - (float)Math.pow((double)f1, 27.0D);
+        float f3 = 1.0F - (float)Math.pow(f1, 27.0D);
         GlStateManager.translate(f3 * 0.6F, f3 * -0.5F, f3 * 0.0F);
         GlStateManager.rotate(f3 * 90.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(f3 * 10.0F, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(f3 * 30.0F, 0.0F, 0.0F, 1.0F);
     }
 
-    private void transformFirstPersonItem(float equipProgress, float swingProgress)
+    public void transformFirstPersonItem(float equipProgress, float swingProgress)
     {
         GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
         GlStateManager.translate(0.0F, equipProgress * -0.6F, 0.0F);
@@ -298,7 +300,7 @@ public class ItemRenderer
         GlStateManager.scale(1.0F, 1.0F, 1.0F + f1 * 0.2F);
     }
 
-    private void doBlockTransformations()
+    public void doBlockTransformations()
     {
         GlStateManager.translate(-0.5F, 0.2F, 0.0F);
         GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
@@ -331,6 +333,9 @@ public class ItemRenderer
                 {
                     EnumAction enumaction = this.itemToRender.getItemUseAction();
 
+
+                    float funnyvar1 = MathHelper.sin(MathHelper.sqrt_float(f1) * (float) Math.PI);
+
                     switch (enumaction)
                     {
                         case NONE:
@@ -344,8 +349,14 @@ public class ItemRenderer
                             break;
 
                         case BLOCK:
-                            this.transformFirstPersonItem(f, 0.0F);
-                            this.doBlockTransformations();
+
+                            if(Heart.getModuleManager().getModule("animations").isEnabled()){
+                                ((Animations) Heart.getModuleManager().getModule("animations")).Animate(this, f, f1, funnyvar1);
+
+                            }else {
+                                this.transformFirstPersonItem(f, 0.0F);
+                                this.doBlockTransformations();
+                            }
                             break;
 
                         case BOW:
