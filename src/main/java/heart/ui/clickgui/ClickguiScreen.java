@@ -40,7 +40,6 @@ public class ClickguiScreen extends GuiScreen {
         for (Component component : components) {
             component.DrawComponent(mouseX, mouseY);
         }
-
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

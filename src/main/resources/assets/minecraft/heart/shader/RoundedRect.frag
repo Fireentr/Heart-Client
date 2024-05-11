@@ -15,7 +15,7 @@ void main() {
     vec2 location = vec2(position.x, position.y);
     float edgeSoftness  = 1.0f;
     float distance 		= roundedBoxSDF(gl_FragCoord.xy - location - (size/2.0f), size / 2.0f, radius);
-    float smoothedAlpha =  1.0f-smoothstep(0.0f, edgeSoftness * 2.0f,distance);
+    float smoothedAlpha =  1.0f-smoothstep(0.0f, edgeSoftness * 2.0f, distance);
 
     float outlineRadius = radius + width/2;
     float outDistance = roundedBoxSDF(gl_FragCoord.xy - location - (size/2.0f), (size+(width*2)) / 2.0f, outlineRadius);
