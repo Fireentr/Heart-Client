@@ -66,10 +66,10 @@ public class VerusDrop extends Mode {
 
     @Override
     public void onCollide(CollisionEvent e) {
-        e.setCollisionX(mc.thePlayer.posX);
-        e.setCollisionY(startY - 1);
-        e.setCollisionZ(mc.thePlayer.posZ);
-        e.setOverride(true);
+        e.collisionX = mc.thePlayer.posX;
+        e.collisionY = startY - 1;
+        e.collisionZ = mc.thePlayer.posZ;
+        e.override = true;
     }
 
     public void setSpeed(double speed) {

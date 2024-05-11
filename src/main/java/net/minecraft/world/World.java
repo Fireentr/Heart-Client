@@ -1265,7 +1265,7 @@ public abstract class World implements IBlockAccess
 
                         CollisionEvent event = new CollisionEvent(0, 0, 0, false);
                         if(Heart.getBus().hasSubscriberForEvent(CollisionEvent.class)){
-                            Heart.getBus().post(event);
+                            Heart.getBus().postSticky(event);
                         }
 
                         if (event.override) {
