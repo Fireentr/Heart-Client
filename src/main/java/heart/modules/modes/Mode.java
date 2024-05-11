@@ -75,5 +75,10 @@ public class Mode {
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAirBB(AirBBEvent e){
+
+    }
+
     public LinkedHashMap<String, Setting> settings = new LinkedHashMap<>();
 }

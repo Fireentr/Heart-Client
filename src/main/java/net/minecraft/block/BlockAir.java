@@ -2,6 +2,9 @@ package net.minecraft.block;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+
+import heart.Heart;
+import heart.events.impl.AirBBEvent;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.AxisAlignedBB;
@@ -24,7 +27,13 @@ public class BlockAir extends Block
 
     public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
     {
-        return null;
+        AirBBEvent abb = new AirBBEvent(null, pos, this);
+
+        if (Heart.getBus().hasSubscriberForEvent(AirBBEvent.class)) {
+            Heart.getBus().postSticky(abb);
+        }
+
+        return abb.aabb;
     }
 
     public boolean isOpaqueCube()
