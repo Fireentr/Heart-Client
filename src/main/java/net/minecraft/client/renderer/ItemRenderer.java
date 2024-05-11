@@ -350,11 +350,10 @@ public class ItemRenderer
                             break;
 
                         case BLOCK:
-
-                            if(Heart.getModuleManager().getModule("animations").isEnabled()){
+                            if (Heart.getModuleManager().getModule("animations").isEnabled()){
                                 ((Animations) Heart.getModuleManager().getModule("animations")).Animate(this, f, f1, funnyvar1);
 
-                            }else {
+                            } else {
                                 this.transformFirstPersonItem(f, 0.0F);
                                 this.doBlockTransformations();
                             }

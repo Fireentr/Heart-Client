@@ -9,11 +9,13 @@ import heart.modules.settings.impl.EnumSetting;
 import heart.util.RotationUtil;
 import heart.util.animation.EasingStyle;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemSword;
 
 import static heart.events.impl.Direction.POST;
 
@@ -22,10 +24,9 @@ public class Killaura extends Module {
         super("KillAura", "Attack Nearby Entities", Category.COMBAT);
         initmodule();
     }
-
     EnumSetting<sortingMode> sortingModeSetting = new EnumSetting<>("Sort", "Sets the way entities get sorted.", sortingMode.values());
+    EnumSetting<autoBlockMode> autoBlockSetting = new EnumSetting<>("AutoBlock", "AutoBlock Type.", autoBlockMode.values());
     BoolSetting attackOtherEntities = new BoolSetting("Atack non-players", "Attack other entities.", false);
-
     EnumSetting<EasingStyle> rotationEasingSetting = new EnumSetting<>("Easing", "Sets the way entities get sorted.", EasingStyle.values());
 
 
@@ -59,10 +60,18 @@ public class Killaura extends Module {
             return;
         }
         if(getTarget() != null) {
+            if (mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
+                switch (autoBlockSetting.getValue()) {
+                    case VANILLA:
+                        // Vanilla AB
+                    case FAKE:
+                        EntityPlayer.itemInUseCount = 1;
+                }
+            }
+
             Minecraft.getMinecraft().thePlayer.swingItem();
             Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, getTarget());
-        }
-
+        } else EntityPlayer.itemInUseCount = 0;
     }
 
 
@@ -129,8 +138,18 @@ public class Killaura extends Module {
 
         return normalizedDegrees;
     }
+
+    @Override
+    public void onDisable() {
+        EntityPlayer.itemInUseCount = 0;
+        super.onDisable();
+    }
 }
 
 enum sortingMode {
     FOV, DISTANCE, HEALTH, SWITCH, MULTI
+}
+
+enum autoBlockMode {
+    NONE, FAKE, VANILLA
 }
