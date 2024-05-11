@@ -339,6 +339,7 @@ public class ItemRenderer
                     switch (enumaction)
                     {
                         case NONE:
+
                             this.transformFirstPersonItem(f, 0.0F);
                             break;
 
@@ -366,7 +367,9 @@ public class ItemRenderer
                 }
                 else
                 {
-                    this.doItemUsedTransformations(f1);
+                    if(!(Heart.getModuleManager().getModule("animations").isEnabled() && ((Animations) Heart.getModuleManager().getModule("animations")).fluxHit.getValue()))
+                        this.doItemUsedTransformations(f1);
+
                     this.transformFirstPersonItem(f, f1);
                 }
 

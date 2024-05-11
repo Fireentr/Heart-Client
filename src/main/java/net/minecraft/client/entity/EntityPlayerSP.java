@@ -1,5 +1,6 @@
 package net.minecraft.client.entity;
 
+import heart.Heart;
 import heart.events.impl.Direction;
 import heart.events.impl.MoveEvent;
 import heart.events.impl.RotationEvent;
@@ -120,8 +121,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
             if (this.isRiding())
             {
                 RotationEvent rotationEvent = new RotationEvent(this.rotationYaw, this.rotationPitch);
-                if(EventBus.getDefault().hasSubscriberForEvent(RotationEvent.class))
-                    EventBus.getDefault().postSticky(rotationEvent);
+                if(Heart.getBus().hasSubscriberForEvent(RotationEvent.class))
+                    Heart.getBus().postSticky(rotationEvent);
                 this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
                 this.sendQueue.addToSendQueue(new C0CPacketInput(this.moveStrafing, this.moveForward, this.movementInput.jump, this.movementInput.sneak));
             }
@@ -169,10 +170,13 @@ public class EntityPlayerSP extends AbstractClientPlayer
         if (this.isCurrentViewEntity())
         {
             MoveEvent moveEvent = new MoveEvent(posX, posY, posZ, lastReportedPosX, lastReportedPosY, lastReportedPosZ, this.getEntityBoundingBox().minY, rotationYaw, rotationPitch, lastReportedYaw, lastReportedPitch, onGround, Direction.PRE);
-            if(EventBus.getDefault().hasSubscriberForEvent(MoveEvent.class))
-                EventBus.getDefault().postSticky(moveEvent);
+            if(Heart.getBus().hasSubscriberForEvent(MoveEvent.class))
+                Heart.getBus().postSticky(moveEvent);
 
             RotationEvent rotationEvent = new RotationEvent(this.rotationYaw, this.rotationPitch);
+            if(Heart.getBus().hasSubscriberForEvent(RotationEvent.class))
+                Heart.getBus().postSticky(rotationEvent);
+
             double d0 = moveEvent.getX() - moveEvent.getLastX();
             double d1 = moveEvent.getMinY() - moveEvent.getLastY();
             double d2 = moveEvent.getZ() - moveEvent.getLastZ();

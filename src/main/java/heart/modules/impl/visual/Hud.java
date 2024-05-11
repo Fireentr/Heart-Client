@@ -9,20 +9,49 @@ import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.ColorSetting;
 import heart.modules.settings.impl.EnumSetting;
 import heart.util.CFontRenderer;
+import heart.util.ColorUtil;
+import heart.util.PacketUtil;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
+import heart.util.shader.impl.DropshadowShader;
+import heart.util.shader.impl.RoundedRectShader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
-enum teste {
-    TEST1, TEST2, TEST3, TEST4, TEST5, TEST6, TEST7, TEST8, TEST9, TEST10;
+enum watermarkOptions {
+    SIMPLE, WORDART, MODERN, COUNTERSTRIKE
+}
+
+enum colorOptions {
+    STATIC, WAVE, DUAL, RAINBOW, ASTOLFO
 }
 
 public class Hud extends Module {
+    RoundedRectShader roundedRectShader;
+    {
+        try {
+            roundedRectShader = new RoundedRectShader();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    DropshadowShader dropshadowShader;
+    {
+        try {
+            dropshadowShader = new DropshadowShader();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     ArrayList<ArraylistModule> arraylistModules = new ArrayList<>();
 
@@ -40,18 +69,16 @@ public class Hud extends Module {
         super.onEnable();
     }
 
-    BoolSetting test = new BoolSetting("Test", "TESING", false);
-    BoolSetting whow = (BoolSetting) new BoolSetting("WHEEEW", "fre", false).addRequirement(new Requirement(test, false));
-    BoolSetting wdshow = new BoolSetting("WHEEEdfsdfW", "fre", false);
-    BoolSetting wsdfasdhow = new BoolSetting("WHdsfsfddsfEEEW", "fre", false);
+    BoolSetting watermarkBool = new BoolSetting("Watermark", "Enables the client watermark.", true);
+    EnumSetting<watermarkOptions> watermark = (EnumSetting<watermarkOptions>) new EnumSetting<>("Watermark Mode", "Sets the client watermark.", watermarkOptions.values()).addRequirement(new Requirement(watermarkBool, true));
+
+    EnumSetting<colorOptions> color = new EnumSetting<>("Color Mode", "Sets the huds color mode.", colorOptions.values());
 
     ColorSetting color1 = new ColorSetting("Theme Color", "Sets the theme color.", new Color(255, 40, 40));
     ColorSetting color2 = new ColorSetting("Accent Color", "Sets the accent color.", new Color(173, 33, 255));
 
-    EnumSetting<teste> testEnumSetting = new EnumSetting<>("testenumop", "da ops", teste.values());
-
     String ClientName = "Heart";
-    CFontRenderer fontRenderer = new CFontRenderer(new Font("Arial", Font.PLAIN, 18));
+    CFontRenderer fontRenderer = new CFontRenderer(new Font("Product Sans", Font.PLAIN, 18));
     public void setClientName(String ClientName) {
         this.ClientName = ClientName;
     }
@@ -59,8 +86,32 @@ public class Hud extends Module {
 
     @Override
     public void onRender2D(Render2DEvent e) {
-        fontRenderer.drawStringWithShadow(ClientName.replace("&", "§"), 2, 2, color1.getValue().getRGB());
-        fontRenderer.drawStringWithShadow("We testin", 2, 2 + 30, color2.getValue().getRGB());
+        if(watermarkBool.getValue()) {
+            switch (watermark.getValue()) {
+                case SIMPLE:
+                    fontRenderer.drawStringWithShadow(ClientName.replace("&", "§"), 2, 2, getColor(0, 1).getRGB());
+                    break;
+                case WORDART:
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("heart/image/wordart.png"));
+                    Gui.drawModalRectWithCustomSizedTexture(5, 5, 0, 0, 150, 80, 150, 80);
+                    break;
+                case MODERN:
+                    GlStateManager.enableBlend();
+                    GlStateManager.enableAlpha();
+                    GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+                    GL11.glDisable(GL11.GL_ALPHA_TEST);
+                    int width = fontRenderer.getStringWidth(ClientName.replace("&", "§") + "§f  |  " + Minecraft.getDebugFPS() + "fps  |  " + PacketUtil.getCurrentPing() + "ms");
+                    roundedRectShader.drawRectWithShader(8, 8, width + 8, 16, 1, 10, new Color(20, 20, 20, 110), new Color(255, 255, 255, 60));
+                    dropshadowShader.drawRectWithShader(8, 8, width + 8, 16, 70, 10, new Color(0, 0, 0, 100), false);
+                    GlStateManager.popAttrib();
+                    fontRenderer.drawString(ClientName.replace("&", "§") + "§f  |  " + Minecraft.getDebugFPS() + "fps  |  " + PacketUtil.getCurrentPing() + "ms", 11, 11, 0xb0ffffff);
+                    break;
+                case COUNTERSTRIKE:
+
+                    break;
+
+            }
+        }
 
         float i = 0;
         for(ArraylistModule module : arraylistModules) {
@@ -69,6 +120,22 @@ public class Hud extends Module {
             i += module.getHeight();
         }
         super.onRender2D(e);
+    }
+
+    public Color getColor(int offset, int speed){
+        switch (color.getValue()) {
+            default:
+                return color1.getValue();
+            case WAVE:
+                return ColorUtil.colorWave(color1.getValue(), color1.getValue().darker(), offset, speed);
+            case DUAL:
+                return ColorUtil.colorWave(color1.getValue(), color2.getValue(), offset, speed);
+            case RAINBOW:
+                return new Color(ColorUtil.getChillRainbow(0));
+            case ASTOLFO:
+                return new Color( ColorUtil.getAstolfoRainbow(offset, speed, 1f, 0.45f));
+
+        }
     }
 }
 

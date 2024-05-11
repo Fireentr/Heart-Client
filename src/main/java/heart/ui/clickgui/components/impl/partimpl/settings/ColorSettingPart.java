@@ -65,6 +65,9 @@ public class ColorSettingPart extends Part {
         height = (int) dynamicAnimationOpen.getValue() + 20;
         if(dynamicAnimationOpen.getValue() > 5) {
 
+            GlStateManager.enableAlpha();
+            GlStateManager.enableBlend();
+
             roundedRectShader.drawRectWithShader(x + 2, y, 120, height - 2, 0, 1, new Color(20, 20, 20, 255), new Color(20, 20, 20, 255));
 
             //hue
@@ -87,7 +90,7 @@ public class ColorSettingPart extends Part {
 
 
             GlStateManager.color(255, 255, 255);
-            smallFontRenderer.drawString("Hue", x + 5, (float) (y + 8.8f * (dynamicAnimationOpen.getValue() / 40)), 0xff252525);
+            smallFontRenderer.drawString("Hue", x + 5, (float) (y + 8.8f * (dynamicAnimationOpen.getValue() / 40)), 0xff353535);
 
             GlStateManager.color(255, 255, 255);
             smallFontRenderer.drawCenteredString(Integer.toString((int) (getHueAsPercentile())), x + 117, y + (float) (14.8f * (dynamicAnimationOpen.getValue() / 40)), 0xff404040);
@@ -99,13 +102,13 @@ public class ColorSettingPart extends Part {
             smallFontRenderer.drawCenteredString(Integer.toString((int) getBrightnessAsPercentile()), x + 117, y + (float) (45.5f * (dynamicAnimationOpen.getValue() / 40)), 0xff404040);
 
             GlStateManager.color(255, 255, 255);
-            smallFontRenderer.drawString("Saturation", (float) (x + 5), (float) (y + 24 * (dynamicAnimationOpen.getValue() / 40)), 0xff252525);
+            smallFontRenderer.drawString("Saturation", (float) (x + 5), (float) (y + 24 * (dynamicAnimationOpen.getValue() / 40)), 0xff353535);
 
 
             GlStateManager.color(255, 255, 255);
-            smallFontRenderer.drawString("Brightness", (float) (x + 5), (float) (y + 4 + 35 * (dynamicAnimationOpen.getValue() / 40)), 0xff252525);
+            smallFontRenderer.drawString("Brightness", (float) (x + 5), (float) (y + 4 + 35 * (dynamicAnimationOpen.getValue() / 40)), 0xff353535);
 
-            roundedRectShader.drawRectWithShader(x + 2, y, 120, 9, 0, 1, new Color(14, 14, 14), new Color(14, 14, 14));
+            roundedRectShader.drawRectWithShader(x + 2, y, 120, 9, 0, 1, new Color(20, 20, 20, 255), new Color(20, 20, 20, 255));
 
         }
         GlStateManager.color(255, 255, 255);
@@ -115,7 +118,9 @@ public class ColorSettingPart extends Part {
 
         smallFontRenderer.drawString(colorSetting.getName(), x + 5, y + 1, new Color(70, 70, 70, (int) (255*((dynamicAnimationOpen.getValue()/40)))).getRGB());
 
-        roundedRectShader.drawRectWithShader(x + 109 - (float) (1 * (1 - dynamicAnimationOpen.getValue())) /40, y + 2, 12 + (float) ((1 - dynamicAnimationOpen.getValue())) /40, 12 + (float)( (1 - dynamicAnimationOpen.getValue())) /40, 0, 1, colorSetting.getValue(), Color.white);
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
+        roundedRectShader.drawRectWithShader(x + 109 - (float) (1 * (1 - dynamicAnimationOpen.getValue())) /40, y + 2, 12 + (float) ((1 - dynamicAnimationOpen.getValue())) /40, 12 + (float)( (1 - dynamicAnimationOpen.getValue())) /40, 1, 1, colorSetting.getValue(), Color.gray);
 
 
         dynamicAnimationHue.setTarget((float) getHueAsPercentile());

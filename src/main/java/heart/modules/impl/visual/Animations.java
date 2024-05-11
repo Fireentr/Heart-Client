@@ -2,6 +2,7 @@ package heart.modules.impl.visual;
 
 import heart.modules.Category;
 import heart.modules.Module;
+import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.DoubleSetting;
 import heart.modules.settings.impl.EnumSetting;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,7 +31,7 @@ public class Animations extends Module {
     DoubleSetting scaleSetting = new DoubleSetting("Scale", "Sets the item scale", 0.1d, 1.5d, 1d, 10);
     DoubleSetting xOffsetSetting = new DoubleSetting("X Offset", "Moves the item on the X axis", 0.1d, 1.5d, 1d, 10);
     DoubleSetting yOffsetSetting = new DoubleSetting("Y Offset", "Moves the item on the Y axis", 0.1d, 1.5d, 1d, 10);
-
+    public BoolSetting fluxHit = new BoolSetting("Flux Swing", "Alternative swinging animation.", false);
 
     public void Animate(ItemRenderer itemRenderer, float fv, float f1v, float funnyvar1v){
         float f = (float) (speedSetting.getValue() * fv);
