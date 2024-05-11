@@ -102,12 +102,12 @@ public class Block
     protected boolean enableStats;
     protected boolean needsRandomTick;
     protected boolean isBlockContainer;
-    protected double minX;
-    protected double minY;
-    protected double minZ;
-    protected double maxX;
-    protected double maxY;
-    protected double maxZ;
+    public double minX;
+    public double minY;
+    public double minZ;
+    public double maxX;
+    public double maxY;
+    public double maxZ;
     public Block.SoundType stepSound;
     public float blockParticleGravity;
     protected final Material blockMaterial;

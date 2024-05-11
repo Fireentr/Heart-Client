@@ -1,42 +1,11 @@
 package heart.events.impl;
 
+import heart.events.Cancellable;
 import net.minecraft.util.AxisAlignedBB;
 
-public class CollisionEvent {
+public class CollisionEvent extends Cancellable {
     public double collisionX, collisionY, collisionZ;
     public boolean override;
-
-    public double getCollisionX() {
-        return collisionX;
-    }
-
-    public void setCollisionX(double collisionX) {
-        this.collisionX = collisionX;
-    }
-
-    public double getCollisionY() {
-        return collisionY;
-    }
-
-    public void setCollisionY(double collisionY) {
-        this.collisionY = collisionY;
-    }
-
-    public double getCollisionZ() {
-        return collisionZ;
-    }
-
-    public void setCollisionZ(double collisionZ) {
-        this.collisionZ = collisionZ;
-    }
-
-    public boolean isOverride() {
-        return override;
-    }
-
-    public void setOverride(boolean override) {
-        this.override = override;
-    }
 
     public CollisionEvent(double collisionX, double collisionY, double collisionZ, boolean override){
         this.collisionX = collisionX;

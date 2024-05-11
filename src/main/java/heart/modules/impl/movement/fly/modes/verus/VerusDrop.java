@@ -1,9 +1,15 @@
 package heart.modules.impl.movement.fly.modes.verus;
 
+import heart.events.impl.AirBBEvent;
 import heart.events.impl.CollisionEvent;
 import heart.events.impl.TickEvent;
 import heart.modules.modes.Mode;
 import heart.util.MotionUtil;
+import net.minecraft.util.AxisAlignedBB;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class VerusDrop extends Mode {
     public VerusDrop() {
@@ -15,15 +21,15 @@ public class VerusDrop extends Mode {
     public int airTime;
     double jumpTick;
 
-    @Override
+    @Subscribe
     public void onEnable() {
-        startY = Math.round(mc.thePlayer.posY - 0.5);
+        startY = Math.round(mc.thePlayer.posY - 1);
         speed = 0;
         airTime = 0;
         mc.thePlayer.jump();
     }
 
-    @Override
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTick(TickEvent e) {
         if (airTime > 0) airTime--;
         if (mc.thePlayer.onGround) mc.timer.timerSpeed = 1;
@@ -64,12 +70,18 @@ public class VerusDrop extends Mode {
         }
     }
 
-    @Override
-    public void onBlockCollide(CollisionEvent e) {
-        e.collisionX = mc.thePlayer.posX;
-        e.collisionY = startY - 1;
-        e.collisionZ = mc.thePlayer.posZ;
-        e.override = true;
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onBlockCollide(CollisionEvent e) {
+//        e.collisionX = mc.thePlayer.posX;
+//        e.collisionY = startY;
+//        e.collisionZ = mc.thePlayer.posZ;
+//        e.override = true;
+//    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAirBB(AirBBEvent e) {
+            if (e.pos.getY() <= startY - 1)
+                e.aabb = new AxisAlignedBB((double) (e.pos.getX() + e.block.minX), (double) (e.pos.getY() + e.block.minY), (double) (e.pos.getZ() + e.block.minZ), (double) (e.pos.getX() + e.block.maxX), (double) (e.pos.getY() + e.block.maxY), (double) (e.pos.getZ() + e.block.maxZ));
     }
 
     public void setSpeed(double speed) {
