@@ -1,9 +1,13 @@
 package heart.commands;
 
+import net.minecraft.client.Minecraft;
+
 public class Command {
 
     private String description;
     private String[] names;
+
+    public Minecraft mc = Minecraft.getMinecraft();
 
     public Command(String[] names, String description){
         this.names = names;

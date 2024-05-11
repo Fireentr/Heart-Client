@@ -87,12 +87,12 @@ public class MotionUtil {
         return Math.toRadians(rotationYaw);
     }
 
-    public static boolean canSprint() {
-        return mc.thePlayer.movementInput.moveForward >= 0.8 && !mc.thePlayer.isCollidedHorizontally && (mc.thePlayer.getFoodStats().getFoodLevel() > 6) && !mc.thePlayer.isSneaking() && (!mc.thePlayer.isUsingItem());
+    public static boolean canSprint(Boolean allDirections) {
+        return (mc.thePlayer.movementInput.moveForward >= 0.8 || allDirections) && !mc.thePlayer.isCollidedHorizontally && (mc.thePlayer.getFoodStats().getFoodLevel() > 6) && !mc.thePlayer.isSneaking() && (!mc.thePlayer.isUsingItem()) && MotionUtil.isMoving();
     }
 
     public static double getBaseMoveSpeed() {
-        double base = mc.thePlayer.isSneaking() ? 0.0663 : (canSprint() ? 0.2873 : 0.221);
+        double base = mc.thePlayer.isSneaking() ? 0.0663 : (canSprint(false) ? 0.2873 : 0.221);
         final PotionEffect moveSpeed = mc.thePlayer.getActivePotionEffect(Potion.moveSpeed);
         final PotionEffect moveSlowness = mc.thePlayer.getActivePotionEffect(Potion.moveSlowdown);
         if (moveSpeed != null) {

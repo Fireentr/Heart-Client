@@ -32,7 +32,7 @@ public class Killaura extends Module {
 
     @Override
     public String getSuffix() {
-        return sortingModeSetting.getValue().name();
+        return sortingModeSetting.getDisplayName();
     }
 
     int i = 0;
@@ -50,7 +50,7 @@ public class Killaura extends Module {
 
         if(sortingModeSetting.getValue() == sortingMode.MULTI){
             for (Entity entity : Minecraft.getMinecraft().theWorld.getLoadedEntityList()) {
-                if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && (entity instanceof EntityPlayer || entity instanceof EntityCreature) && !(entity instanceof EntityArmorStand)) {
+                if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 3.1 && (entity instanceof EntityPlayer || entity instanceof EntityCreature) && !(entity instanceof EntityArmorStand)) {
                     if(!hasSwung)
                         Minecraft.getMinecraft().thePlayer.swingItem();
                     hasSwung = true;
