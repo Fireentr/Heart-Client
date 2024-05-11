@@ -1,10 +1,7 @@
 package heart.modules.modes;
 
 import heart.Heart;
-import heart.events.impl.CollisionEvent;
-import heart.events.impl.Render2DEvent;
-import heart.events.impl.RotationEvent;
-import heart.events.impl.TickEvent;
+import heart.events.impl.*;
 import heart.modules.settings.Setting;
 import net.minecraft.client.Minecraft;
 import org.greenrobot.eventbus.Subscribe;
@@ -69,10 +66,14 @@ public class Mode {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCollide(CollisionEvent e){
+    public void onBlockCollide(CollisionEvent e){
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPacket(PacketEvent e){
+
+    }
 
     public LinkedHashMap<String, Setting> settings = new LinkedHashMap<>();
 }

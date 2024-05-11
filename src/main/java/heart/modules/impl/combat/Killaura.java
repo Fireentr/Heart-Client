@@ -74,7 +74,7 @@ public class Killaura extends Module {
         if(target != null){
             float[] rots = RotationUtil.getRotations(target.posX, target.posY + target.getEyeHeight(), target.posZ);
 
-            e.setPitch(4);
+            e.setPitch(rots[0]);
             e.setYaw(rots[1]);
 
             mc.thePlayer.rotationYawHead = rots[0];
