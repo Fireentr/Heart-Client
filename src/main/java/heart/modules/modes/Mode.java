@@ -5,7 +5,6 @@ import heart.events.impl.Render2DEvent;
 import heart.events.impl.RotationEvent;
 import heart.events.impl.TickEvent;
 import heart.modules.settings.Setting;
-import javafx.scene.input.RotateEvent;
 import net.minecraft.client.Minecraft;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

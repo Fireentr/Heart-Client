@@ -3,7 +3,10 @@ package heart.ui.clickgui;
 import heart.modules.Category;
 import heart.ui.clickgui.components.Component;
 import heart.ui.clickgui.components.impl.CategoryCompontenent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.Sys;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ public class ClickguiScreen extends GuiScreen {
     public ArrayList<Component> components;
 
     public ClickguiScreen() {
+        super();
         components = new ArrayList<>();
 
 
@@ -24,9 +28,7 @@ public class ClickguiScreen extends GuiScreen {
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
-        return false;
-    }
+    public boolean doesGuiPauseGame() {return false;}
 
     @Override
     public void initGui() {

@@ -8,7 +8,6 @@ import heart.modules.modes.Mode;
 import heart.modules.settings.Requirement;
 import heart.modules.settings.Setting;
 import heart.modules.settings.impl.*;
-import javafx.scene.input.RotateEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.reflections.Reflections;
