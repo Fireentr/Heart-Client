@@ -21,6 +21,11 @@ enum AnimationOptions {
 }
 
 public class Animations extends Module {
+
+    @Override
+    public String getSuffix() {
+        return animationOptions.getDisplayName();
+    }
     public Animations() {
         super("Animations", "Animates sword blocking", Category.VISUAL);
         initmodule();

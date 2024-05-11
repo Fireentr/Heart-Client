@@ -19,7 +19,7 @@ import static heart.events.impl.Direction.POST;
 
 public class Killaura extends Module {
     public Killaura() {
-        super("Killaura", "Attack Nearby Entities", Category.COMBAT);
+        super("KillAura", "Attack Nearby Entities", Category.COMBAT);
         initmodule();
     }
 
@@ -28,6 +28,11 @@ public class Killaura extends Module {
 
     EnumSetting<EasingStyle> rotationEasingSetting = new EnumSetting<>("Easing", "Sets the way entities get sorted.", EasingStyle.values());
 
+
+    @Override
+    public String getSuffix() {
+        return sortingModeSetting.getValue().name();
+    }
 
     int i = 0;
     @Override
@@ -39,7 +44,6 @@ public class Killaura extends Module {
         if (i > 20){
             i = 0;
         }
-        System.out.println(i + " | " + e.direction.name());
 
         boolean hasSwung = false;
 
@@ -65,7 +69,6 @@ public class Killaura extends Module {
 
     @Override
     public void onRotate(RotationEvent e) {
-        System.out.println("COCK!");
         Entity target = getTarget();
         e.setPitch(4);
         if(target != null){

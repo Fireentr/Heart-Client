@@ -69,27 +69,25 @@ public class ModeSettingPart extends Part {
 
     @Override
     public void onMouseClick(int x, int y, int button) {
-        if(hovered && button == 1 && dynamicAnimation.getValue() > dynamicAnimation.targetValue - 1) {
+        if(hovered && dynamicAnimation.getValue() > dynamicAnimation.targetValue - 1) {
             open = !open;
         }
 
-        if(button == 0) {
-            int i = 1;
-            for (Mode m : modeSetting.getModes()) {
-                if(x > xpos && x < xpos + 124 && y > ypos + i * 20 && y < ypos + i * 20 + 20) {
-                    for(Mode mo : modeSetting.getModes()) {
-                        if(mo.isEnabled()){
-                            mo.setEnabled(false);
-                        }
-                        if(m.equals(mo)) {
-                            modeSetting.setSelected(m);
-                        }
+        int i = 1;
+        for (Mode m : modeSetting.getModes()) {
+            if(x > xpos && x < xpos + 124 && y > ypos + i * 20 && y < ypos + i * 20 + 20) {
+                for(Mode mo : modeSetting.getModes()) {
+                    if(mo.isEnabled()){
+                        mo.setEnabled(false);
                     }
-                    modeSetting.setSelected(m);
-                    System.out.println(m.getName());
+                    if(m.equals(mo)) {
+                        modeSetting.setSelected(m);
+                    }
                 }
-                i++;
+                modeSetting.setSelected(m);
+                System.out.println(m.getName());
             }
+            i++;
         }
         super.onMouseClick(x, y, button);
     }

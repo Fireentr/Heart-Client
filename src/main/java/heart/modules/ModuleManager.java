@@ -4,6 +4,7 @@ import heart.Heart;
 import heart.events.impl.KeyPressEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
 

@@ -10,6 +10,7 @@ import heart.ui.Hud;
 import heart.ui.clickgui.ClickguiScreen;
 import heart.ui.screen.impl.MainMenuScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.util.ResourceLocation;
 import org.greenrobot.eventbus.EventBus;
 import org.reflections.Reflections;
@@ -21,7 +22,7 @@ public class Heart {
     static final Heart instance = new Heart();
     static final Hud hud = new Hud();
     static final EventBus bus = new EventBus();
-    static final MainMenuScreen mainMenuScreen = new MainMenuScreen();
+    static final GuiMainMenu mainMenuScreen = new GuiMainMenu(); // static final MainMenuScreen mainMenuScreen = new MainMenuScreen();
     static ClickguiScreen clickgui = null;
     static ModuleManager moduleManager = new ModuleManager();
     static CommandManager commandManager = new CommandManager();
@@ -47,7 +48,7 @@ public class Heart {
         return clickgui;
     }
 
-    public static MainMenuScreen getMainMenuScreen() {
+    public static GuiMainMenu getMainMenuScreen() { // public static MainMenuScreen getMainMenuScreen() {
         return mainMenuScreen;
     }
 

@@ -10,6 +10,7 @@ public class Part {
     public int height;
 
     public CFontRenderer fontRenderer = new CFontRenderer(new Font(new ResourceLocation("Product Sans").getResourcePath(), Font.PLAIN, 16));
+    public CFontRenderer smallFontRenderer = new CFontRenderer(new Font(new ResourceLocation("Product Sans").getResourcePath(), Font.PLAIN, 12));
 
     int yOffset = 0;
 

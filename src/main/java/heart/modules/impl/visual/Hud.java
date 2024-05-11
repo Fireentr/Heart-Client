@@ -13,6 +13,7 @@ import heart.util.ColorUtil;
 import heart.util.PacketUtil;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
+import heart.util.shader.Shader;
 import heart.util.shader.impl.DropshadowShader;
 import heart.util.shader.impl.RoundedRectShader;
 import net.minecraft.client.Minecraft;
@@ -24,12 +25,14 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Objects;
 
 enum watermarkOptions {
-    SIMPLE, WORDART, MODERN, COUNTERSTRIKE
+    SIMPLE, BAR, IMAGE
 }
 
 enum colorOptions {
@@ -79,7 +82,7 @@ public class Hud extends Module {
     ColorSetting color2 = new ColorSetting("Accent Color", "Sets the accent color.", new Color(173, 33, 255));
 
     String ClientName = "Heart";
-    CFontRenderer fontRenderer = new CFontRenderer(new Font("Product Sans", Font.PLAIN, 18));
+    CFontRenderer fontRenderer = new CFontRenderer(new Font("Product Sans",  Font.PLAIN, 18));
     public void setClientName(String ClientName) {
         this.ClientName = ClientName;
     }
@@ -92,25 +95,21 @@ public class Hud extends Module {
                 case SIMPLE:
                     fontRenderer.drawStringWithShadow(ClientName.replace("&", "§"), 2, 2, getColor(0, 1).getRGB());
                     break;
-                case WORDART:
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("heart/image/wordart.png"));
-                    Gui.drawModalRectWithCustomSizedTexture(5, 5, 0, 0, 150, 80, 150, 80);
-                    break;
-                case MODERN:
+                case BAR:
                     GlStateManager.enableBlend();
                     GlStateManager.enableAlpha();
                     GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
                     GL11.glDisable(GL11.GL_ALPHA_TEST);
-                    int width = fontRenderer.getStringWidth(ClientName.replace("&", "§") + "§f  |  " + Minecraft.getDebugFPS() + "fps  |  " + PacketUtil.getCurrentPing() + "ms");
-                    roundedRectShader.drawRectWithShader(8, 8, width + 8, 16, 1, 10, new Color(20, 20, 20, 110), new Color(255, 255, 255, 60));
-                    dropshadowShader.drawRectWithShader(8, 8, width + 8, 16, 70, 10, new Color(0, 0, 0, 100), false);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm a");
+                    String timeString = dateFormat.format(new Date());
+                    String boxString = ClientName.replace("&", "§") + "§7 | §f" + mc.session.getUsername() + " §7| §f" + Minecraft.getDebugFPS() + "fps" + " §7| §f" + timeString;
+                    fontRenderer.drawString(boxString, 8, 8.3f, Color.WHITE.getRGB(), true);
                     GlStateManager.popAttrib();
-                    fontRenderer.drawString(ClientName.replace("&", "§") + "§f  |  " + Minecraft.getDebugFPS() + "fps  |  " + PacketUtil.getCurrentPing() + "ms", 11, 11, 0xb0ffffff);
                     break;
-                case COUNTERSTRIKE:
-
+                case IMAGE:
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("heart/image/icon.png"));
+                    Gui.drawModalRectWithCustomSizedTexture(-10, -10, 0, 0, 80, 80, 80, 80);
                     break;
-
             }
         }
 
@@ -186,6 +185,6 @@ class ArraylistModule {
                 animationY.setTarget(12);
         }
 
-        Heart.getHud().fontRenderer.drawStringWithShadow(module.getName(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, Color.WHITE.getRGB());
+        Heart.getHud().fontRenderer.drawStringWithShadow(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, Color.WHITE.getRGB());
     }
 }

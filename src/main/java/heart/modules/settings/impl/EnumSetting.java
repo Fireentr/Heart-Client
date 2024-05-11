@@ -20,6 +20,10 @@ public class EnumSetting<E extends Enum<E>> extends Setting {
         return selectedValue;
     }
 
+    public String getDisplayName() {
+        return selectedValue.name().substring(0, 1).toUpperCase() + selectedValue.name().substring(1).toLowerCase();
+    }
+
     public E[] getValues() {
         return values;
     }
