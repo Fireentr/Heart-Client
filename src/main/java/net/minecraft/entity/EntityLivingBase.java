@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+
+import heart.Heart;
+import heart.modules.ModuleManager;
+import heart.modules.impl.visual.Animations;
+import heart.modules.settings.impl.DoubleSetting;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -1137,7 +1142,9 @@ public abstract class EntityLivingBase extends Entity
 
     private int getArmSwingAnimationEnd()
     {
-        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) * 1 : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
+        // TODO: Make this use animation setting
+        int swingTime = 8;
+        return this.isPotionActive(Potion.digSpeed) ? swingTime - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) : (this.isPotionActive(Potion.digSlowdown) ? swingTime + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : swingTime);
     }
 
     public void swingItem()

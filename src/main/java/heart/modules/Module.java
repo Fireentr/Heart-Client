@@ -19,15 +19,15 @@ import java.util.*;
 public class Module {
     private final String name;
     private final String description;
-    private final Category category;
+    private String suffix = "";
 
+    private final Category category;
     public Minecraft mc = Minecraft.getMinecraft();
 
     private boolean hidden = false;
     private boolean enabled = false;
     private int keycode = -1;
     private LinkedHashMap<String, Setting> settings = new LinkedHashMap<>();
-
     public Module(String name, String description, Category category) {
         this.name = name;
         this.description = description;
@@ -142,9 +142,8 @@ public class Module {
         this.keycode = keycode;
     }
 
-
     public String getSuffix(){
-        return "";
+        return suffix;
     }
 
     //events
