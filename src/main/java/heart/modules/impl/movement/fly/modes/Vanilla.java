@@ -16,13 +16,13 @@ public class Vanilla extends Mode {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTick(TickEvent e){
         MotionUtil.strafe(1.0);
-        Minecraft.getMinecraft().thePlayer.motionY = 0;
-        if(Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown()){
-            Minecraft.getMinecraft().thePlayer.motionY = 0.75;
+        mc.thePlayer.motionY = 0;
+        if(mc.gameSettings.keyBindJump.isKeyDown()){
+            mc.thePlayer.motionY = 0.75;
         }
 
-        if(Minecraft.getMinecraft().gameSettings.keyBindSneak.isKeyDown()){
-            Minecraft.getMinecraft().thePlayer.motionY = -0.75;
+        if(mc.gameSettings.keyBindSneak.isKeyDown()){
+            mc.thePlayer.motionY = -0.75;
         }
     }
 }

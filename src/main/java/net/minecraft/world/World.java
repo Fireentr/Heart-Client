@@ -11,6 +11,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import heart.Heart;
+import heart.events.impl.CollisionEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.block.BlockLiquid;
@@ -52,6 +55,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldInfo;
+import org.greenrobot.eventbus.EventBus;
 
 public abstract class World implements IBlockAccess
 {
@@ -1256,6 +1260,18 @@ public abstract class World implements IBlockAccess
                         }
 
                         iblockstate.getBlock().addCollisionBoxesToList(this, blockpos$mutableblockpos, iblockstate, bb, list, (Entity)null);
+
+                        AxisAlignedBB axisalignedbb;
+
+                        CollisionEvent event = new CollisionEvent(0, 0, 0, false);
+                        if(Heart.getBus().hasSubscriberForEvent(CollisionEvent.class)){
+                            Heart.getBus().post(event);
+                        }
+
+                        if (event.override) {
+                            list.add(AxisAlignedBB.fromBounds(-15, -1, -15, 15, 1, 15).offset(event.collisionX, event.collisionY, event.collisionZ));
+                        }
+
                     }
                 }
             }

@@ -1,11 +1,11 @@
 package heart.modules.modes;
 
 import heart.Heart;
+import heart.events.impl.CollisionEvent;
 import heart.events.impl.Render2DEvent;
 import heart.events.impl.RotationEvent;
 import heart.events.impl.TickEvent;
 import heart.modules.settings.Setting;
-import javafx.scene.input.RotateEvent;
 import net.minecraft.client.Minecraft;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -65,6 +65,11 @@ public class Mode {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRotate(RotationEvent e){
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCollide(CollisionEvent e){
 
     }
 

@@ -8,7 +8,7 @@ import heart.modules.modes.Mode;
 import heart.modules.settings.Requirement;
 import heart.modules.settings.Setting;
 import heart.modules.settings.impl.*;
-import javafx.scene.input.RotateEvent;
+import net.minecraft.client.Minecraft;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.reflections.Reflections;
@@ -20,6 +20,8 @@ public class Module {
     private final String name;
     private final String description;
     private final Category category;
+
+    public Minecraft mc = Minecraft.getMinecraft();
 
     private boolean hidden = false;
     private boolean enabled = false;

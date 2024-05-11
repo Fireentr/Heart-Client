@@ -18,8 +18,8 @@ public class BunnyHop extends Mode {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTick(TickEvent e){
         MotionUtil.strafe(MotionUtil.getBaseMoveSpeed() * 1.5);
-        if(Minecraft.getMinecraft().thePlayer.onGround){
-            Minecraft.getMinecraft().thePlayer.jump();
+        if(mc.thePlayer.onGround && MotionUtil.isMoving()){
+            mc.thePlayer.jump();
         }
     }
 }
