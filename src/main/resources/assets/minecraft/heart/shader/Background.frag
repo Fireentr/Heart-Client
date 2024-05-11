@@ -1,49 +1,54 @@
-#extension GL_OES_standard_derivatives : enable
-
 #ifdef GL_ES
-precision highp float;
+precision mediump float;
 #endif
 
-#define repeat(i, n) for(int i = 0; i < n; i++)
+#extension GL_OES_standard_derivatives : enable
 
-uniform float time;
+uniform vec2      resolution;
+uniform float     time;
+uniform float     alpha;
+uniform vec2      speed;
+uniform float     shift;
 
-uniform vec2 resolution;
 
-void main(void)
-{
-    vec2 uv = gl_FragCoord.xy / resolution.xy - 1.0;
-    uv.y *= resolution.y / resolution.x;
-    float mul = resolution.x / resolution.y;
-    vec3 dir = vec3(uv * mul, 1.);
-    float a2 = time * 20. + .5;
-    float a1 = 1.0;
-    mat2 rot1 = mat2(cos(a1), sin(a1), - sin(a1), cos(a1));
-    mat2 rot2 = rot1;
-    dir.xz *= rot1;
-    dir.xy *= rot2;
-    vec3 from = vec3(0., 0., 0.);
-    from += vec3(.0025 * time, .015 * time, - 2.);
-    from.xz *= rot1;
-    from.xy *= rot2;
-    float s = .1, fade = .07;
-    vec3 v = vec3(0.4);
-    repeat(r, 10) {
-    vec3 p = from + s * dir * 1.5;
-    p = abs(vec3(0.750) - mod(p, vec3(0.750 * 2.)));
-    p.x += float(r * r) * 0.01;
-    p.y += float(r) * 0.002;
-    float pa, a = pa = 0.;
-    repeat(i, 12) {
-        p = abs(p) / dot(p, p) - 0.340;
-        a += abs(length(p) - pa * 0.2);
-        pa = length(p);
-    }
-    a *= a * a * 2.;
-    v += vec3(s * 3.0, s * s / 5.0, s * s * 4.0) * a * 0.0019 * fade;
-    fade *= 0.760;
-    s += 0.110;
+float rand(vec2 point) {
+    return fract(100.0 * sin(point.x + fract(100.0 * sin(point.y)))); // http://www.matteo-basei.it/noise
 }
-    v = mix(vec3(length(v)), v, 0.5);
-    gl_FragColor = vec4(v * 0.01, 1.);
+
+float noise(vec2 n) {
+    //Uses the rand function to generate noise
+    const vec2 d = vec2(2.8, 2.8);
+    vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));
+    return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);
+}
+
+float fbm(vec2 n) {
+    //fbm stands for "Fractal Brownian Motion" https://en.wikipedia.org/wiki/Fractional_Brownian_motion
+    float total = 0.7, amplitude = 1.0;
+    for (int i = 0; i < 4; i++) {
+        total += noise(n) * amplitude;
+        n += n;
+        amplitude *= 1.0;
+    }
+    return total;
+}
+
+void main() {
+    //This is where our shader comes together
+    const vec3 c1 = vec3(126.0/255.0, 0.0/255.0, 97.0/255.0);
+    const vec3 c2 = vec3(173.0/255.0, 0.0/255.0, 161.4/255.0);
+    const vec3 c3 = vec3(0.2, 0.0, 0.0);
+    const vec3 c4 = vec3(164.0/255.0, 1.0/255.0, 214.4/255.0);
+    const vec3 c5 = vec3(0.1);
+    const vec3 c6 = vec3(0.9);
+
+    //This is how "packed" the smoke is in our area. Try changing 8.0 to 1.0, or something else
+    vec2 p = gl_FragCoord.xy * 8.0 / resolution.xx;
+    //The fbm function takes p as its seed (so each pixel looks different) and time (so it shifts over time)
+    float q = fbm(p - time * 0.1);
+    vec2 r = vec2(fbm(p + q + time * speed.x - p.x - p.y), fbm(p + q - time * speed.y));
+    vec3 c = mix(c1, c2, fbm(p + r)) + mix(c3, c4, r.x) - mix(c5, c6, r.y);
+    float grad = gl_FragCoord.y / resolution.y;
+    gl_FragColor = vec4(c * cos(shift * gl_FragCoord.y / resolution.y), 1.0);
+    gl_FragColor.xyz *= 1.0-grad;
 }

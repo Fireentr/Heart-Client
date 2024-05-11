@@ -25,6 +25,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
 enum watermarkOptions {
@@ -112,6 +113,8 @@ public class Hud extends Module {
 
             }
         }
+
+        arraylistModules.sort((o1, o2) -> Float.compare(o2.getWidth(), o1.getWidth()));
 
         float i = 0;
         for(ArraylistModule module : arraylistModules) {

@@ -1,6 +1,5 @@
 package heart.modules.settings;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import heart.modules.modes.Mode;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.ModeSetting;

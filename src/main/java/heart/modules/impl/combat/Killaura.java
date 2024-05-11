@@ -7,10 +7,12 @@ import heart.modules.Module;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.EnumSetting;
 import heart.util.RotationUtil;
+import heart.util.animation.EasingStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 
 import static heart.events.impl.Direction.POST;
@@ -23,6 +25,9 @@ public class Killaura extends Module {
 
     EnumSetting<sortingMode> sortingModeSetting = new EnumSetting<>("Sort", "Sets the way entities get sorted.", sortingMode.values());
     BoolSetting attackOtherEntities = new BoolSetting("Atack non-players", "Attack other entities.", false);
+
+    EnumSetting<EasingStyle> rotationEasingSetting = new EnumSetting<>("Easing", "Sets the way entities get sorted.", EasingStyle.values());
+
 
     int i = 0;
     @Override
@@ -40,7 +45,7 @@ public class Killaura extends Module {
 
         if(sortingModeSetting.getValue() == sortingMode.MULTI){
             for (Entity entity : Minecraft.getMinecraft().theWorld.getLoadedEntityList()) {
-                if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && (entity instanceof EntityPlayer || entity instanceof EntityCreature)) {
+                if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && (entity instanceof EntityPlayer || entity instanceof EntityCreature) && !(entity instanceof EntityArmorStand)) {
                     if(!hasSwung)
                         Minecraft.getMinecraft().thePlayer.swingItem();
                     hasSwung = true;
@@ -69,6 +74,10 @@ public class Killaura extends Module {
             e.setPitch(4);
             e.setYaw(rots[1]);
 
+            mc.thePlayer.rotationYawHead = rots[0];
+            mc.thePlayer.rotationPitchHead = rots[1];
+            mc.thePlayer.renderYawOffset = rots[0];
+
         }
         super.onRotate(e);
     }
@@ -82,7 +91,7 @@ public class Killaura extends Module {
 
         for (Entity entity : Minecraft.getMinecraft().theWorld.loadedEntityList) {
             if(entity instanceof EntityLivingBase) {
-                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive()) {
+                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive() && !(entity instanceof EntityArmorStand)) {
                     switch (sortingModeSetting.getValue()){
                         case HEALTH:
                             if(((EntityLivingBase) entity).getHealth() > max){
