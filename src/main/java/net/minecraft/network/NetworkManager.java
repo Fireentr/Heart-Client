@@ -2,6 +2,9 @@ package net.minecraft.network;
 
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import heart.Heart;
+import heart.events.impl.Origin;
+import heart.events.impl.PacketEvent;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
@@ -135,8 +138,16 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
         this.closeChannel(chatcomponenttranslation);
     }
 
-    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet p_channelRead0_2_) throws Exception
-    {
+    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet p_channelRead0_2_) throws Exception {
+
+        PacketEvent event = new PacketEvent(Origin.SERVER, p_channelRead0_2_);
+
+        if (Heart.getBus().hasSubscriberForEvent(PacketEvent.class))
+            Heart.getBus().postSticky(event);
+
+        if (event.isCancelled())
+            return;
+
         if (this.channel.isOpen())
         {
             try
@@ -159,6 +170,14 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet>
 
     public void sendPacket(Packet packetIn)
     {
+        PacketEvent event = new PacketEvent(Origin.CLIENT, packetIn);
+
+        if (Heart.getBus().hasSubscriberForEvent(PacketEvent.class))
+            Heart.getBus().postSticky(event);
+
+        if (event.isCancelled())
+            return;
+
         if (this.isChannelOpen())
         {
             this.flushOutboundQueue();
