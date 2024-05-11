@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Objects;
 
 enum watermarkOptions {
-    SIMPLE, BAR, IMAGE
+    SIMPLE, BAR, IMAGE, WORDART
 }
 
 enum colorOptions {
@@ -110,6 +110,11 @@ public class Hud extends Module {
                     Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("heart/image/icon.png"));
                     Gui.drawModalRectWithCustomSizedTexture(-10, -10, 0, 0, 80, 80, 80, 80);
                     break;
+                case WORDART:
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("heart/image/wordart.png"));
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 150, 80, 150, 80);
+                    break;
+
             }
         }
 
