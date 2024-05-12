@@ -5,21 +5,23 @@ import heart.events.impl.TickEvent;
 import heart.modules.Category;
 import heart.modules.Module;
 import heart.modules.settings.impl.BoolSetting;
+import heart.modules.settings.impl.DoubleSetting;
 import heart.modules.settings.impl.EnumSetting;
 import heart.util.RotationUtil;
 import heart.util.animation.EasingStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
+import org.lwjgl.input.Mouse;
+
+import java.util.Timer;
 
 import static heart.events.impl.Direction.POST;
 
@@ -28,11 +30,13 @@ public class Killaura extends Module {
         super("KillAura", "Attack Nearby Entities", Category.COMBAT);
         initmodule();
     }
+
+    DoubleSetting apsSetting = new DoubleSetting("APS", "Sets the killaura's APS/CPS.", 1, 20, 12, 10);
     EnumSetting<sortingMode> sortingModeSetting = new EnumSetting<>("Sort", "Sets the way entities get sorted.", sortingMode.values());
     EnumSetting<autoBlockMode> autoBlockSetting = new EnumSetting<>("AutoBlock", "AutoBlock Type.", autoBlockMode.values());
-    BoolSetting attackOtherEntities = new BoolSetting("Attack non-players", "Attack other entities.", false);
+    BoolSetting attackOtherEntities = new BoolSetting("Atack non-players", "Attack other entities.", false);
+    EnumSetting<autoBlockMode> targetHudSetting = new EnumSetting<>("Target HUD", "Displays a HUD element that gives info about targets.", autoBlockMode.values());
     EnumSetting<EasingStyle> rotationEasingSetting = new EnumSetting<>("Easing", "Sets the way entities get sorted.", EasingStyle.values());
-
 
     @Override
     public String getSuffix() {
@@ -40,26 +44,36 @@ public class Killaura extends Module {
     }
 
     int i = 0;
+    long nanoDelay = 0;
+    long lastUpdateTime = 0;
+
     @Override
     public void onTick(TickEvent e){
-        EntityPlayer entityPlayer = mc.thePlayer;
         if (e.direction.equals(POST))
             return;
+
 
         i++;
         if (i > 20){
             i = 0;
+            nanoDelay = (long) (1_000_000_000L / apsSetting.getValue());
+            lastUpdateTime = System.nanoTime();
         }
+
+        long currentTime = System.nanoTime();
+        long elapsedTime = currentTime - lastUpdateTime;
 
         boolean hasSwung = false;
 
         if(sortingModeSetting.getValue() == sortingMode.MULTI){
             for (Entity entity : Minecraft.getMinecraft().theWorld.getLoadedEntityList()) {
                 if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 3.1 && (entity instanceof EntityPlayer || entity instanceof EntityCreature) && !(entity instanceof EntityArmorStand)) {
-                    if(!hasSwung)
-                        Minecraft.getMinecraft().thePlayer.swingItem();
-                    hasSwung = true;
-                    Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, entity);
+                    if (elapsedTime >= nanoDelay) {
+                        if (!hasSwung)
+                            Minecraft.getMinecraft().thePlayer.swingItem();
+                        hasSwung = true;
+                        Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, entity);
+                    }
                 }
             }
             return;
@@ -67,22 +81,23 @@ public class Killaura extends Module {
         if(getTarget() != null) {
             if (mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
                 switch (autoBlockSetting.getValue()) {
-                    case PACKET:
-                        entityPlayer.itemInUseCount = 1;
-                        mc.thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
+                    default:
+
+                        break;
+                    case VANILLA:
+                        // Vanilla AB
                         break;
                     case FAKE:
-                        entityPlayer.itemInUseCount = 1;
+                        mc.thePlayer.itemInUseCount = 1;
                         break;
                 }
             }
 
-            Minecraft.getMinecraft().thePlayer.swingItem();
-            Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, getTarget());
-        } else {
-            if (autoBlockSetting.getValue().equals(autoBlockMode.PACKET)) new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
-            if(!mc.gameSettings.keyBindUseItem.isPressed()) entityPlayer.itemInUseCount = 0;
-        }
+            if (elapsedTime >= nanoDelay) {
+                Minecraft.getMinecraft().thePlayer.swingItem();
+                Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, getTarget());
+            }
+        } else if(!GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem)) mc.thePlayer.itemInUseCount = 0;
     }
 
 
@@ -105,7 +120,7 @@ public class Killaura extends Module {
         super.onRotate(e);
     }
 
-    public Minecraft mc = Minecraft.getMinecraft();
+    public Minecraft mc= Minecraft.getMinecraft();
 
     public EntityLivingBase getTarget() {
         EntityLivingBase target = null;
@@ -114,7 +129,7 @@ public class Killaura extends Module {
 
         for (Entity entity : Minecraft.getMinecraft().theWorld.loadedEntityList) {
             if(entity instanceof EntityLivingBase) {
-                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 3.1 && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive() && !(entity instanceof EntityArmorStand)) {
+                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive() && !(entity instanceof EntityArmorStand)) {
                     switch (sortingModeSetting.getValue()){
                         case HEALTH:
                             if(((EntityLivingBase) entity).getHealth() > max){
@@ -152,9 +167,7 @@ public class Killaura extends Module {
 
     @Override
     public void onDisable() {
-        if (autoBlockSetting.getValue().equals(autoBlockMode.PACKET)) new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
-        EntityPlayer entityPlayer = mc.thePlayer;
-        if(!mc.gameSettings.keyBindUseItem.isPressed()) entityPlayer.itemInUseCount = 0;
+        mc.thePlayer.itemInUseCount = 0;
         super.onDisable();
     }
 }
@@ -164,5 +177,9 @@ enum sortingMode {
 }
 
 enum autoBlockMode {
-    NONE, FAKE, PACKET
+    NONE, FAKE, VANILLA
+}
+
+enum targetHudModes {
+    NONE, HEART, OLDNOVOLINE, RISE, REMIX, EXHIBITION
 }

@@ -10,6 +10,8 @@ import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 
+import java.io.FileNotFoundException;
+
 public class Clickgui extends Module {
     public Clickgui() {
         super("ClickGui", "Render the client gui", Category.VISUAL);

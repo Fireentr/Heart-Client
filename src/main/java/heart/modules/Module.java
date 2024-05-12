@@ -101,6 +101,20 @@ public class Module {
         }
     }
 
+    public void setEnabledWithoutEvent(boolean enabled) {
+        this.enabled = enabled;
+
+        if (enabled) {
+            Heart.getBus().register(this);
+            if(!modes.isEmpty())
+                ((ModeSetting)getSettings().get("mode")).getSelected().setEnabled(true);
+        } else{
+            Heart.getBus().unregister(this);
+            if(!modes.isEmpty())
+                ((ModeSetting)getSettings().get("mode")).getSelected().setEnabled(false);
+        }
+    }
+
     public void onRegister() throws InstantiationException, IllegalAccessException {
         String modePackage = this.getClass().getPackage().getName() + ".modes";
 

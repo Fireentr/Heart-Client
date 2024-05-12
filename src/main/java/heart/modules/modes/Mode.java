@@ -38,6 +38,16 @@ public class Mode {
         }
     }
 
+    public void setEnabledWithoutEvent(boolean enabled) {
+        this.enabled = enabled;
+
+        if (enabled) {
+            Heart.getBus().register(this);
+        } else{
+            Heart.getBus().unregister(this);
+        }
+    }
+
     public String getName() {
         return name;
     }

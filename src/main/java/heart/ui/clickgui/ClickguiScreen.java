@@ -1,5 +1,6 @@
 package heart.ui.clickgui;
 
+import heart.Heart;
 import heart.modules.Category;
 import heart.ui.clickgui.components.Component;
 import heart.ui.clickgui.components.impl.CategoryCompontenent;
@@ -8,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -18,8 +20,7 @@ public class ClickguiScreen extends GuiScreen {
     public ClickguiScreen() {
         super();
         components = new ArrayList<>();
-
-
+        
         components.add(new CategoryCompontenent(Category.COMBAT, '\uF71D', 24, 44));
         components.add(new CategoryCompontenent(Category.MOVEMENT, 'a', 164, 44));
         components.add(new CategoryCompontenent(Category.VISUAL, 'a', 304, 44));
@@ -33,6 +34,11 @@ public class ClickguiScreen extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
+        try {
+            Heart.getInstance().saveConfig(Heart.getInstance().getSaveFileLocation());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
