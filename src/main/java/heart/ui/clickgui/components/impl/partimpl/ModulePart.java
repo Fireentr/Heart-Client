@@ -126,12 +126,12 @@ public class ModulePart extends Part {
 
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
-        roundedRectShader.drawRectWithShader(x + 4, y + 3, 12, 12,0, 3, new Color(0x070707), new Color(0x070707));
+        roundedRectShader.drawRectWithShader(x + 4, y + 3, 12, 12,0, 3, new Color(0x0C0C0C), new Color(0x070707));
         GlStateManager.color(255, 255, 255);
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
         fontRenderer.drawString(module.getName(), x + 20, y + 4.5f, new Color(255, 255, 255, (int) enableAnimation.getValue()).getRGB());
-        smallFontRenderer.drawCenteredString(module.getKeycode() == 0 || module.getKeycode() == -1 ? "." : (Keyboard.getKeyName(module.getKeycode()).length() > 2 ? Keyboard.getKeyName(module.getKeycode()).substring(0, 2) : Keyboard.getKeyName(module.getKeycode())), x + 10.5f, y + 5.5f, new Color((int) enableAnimation.getValue(), (int) enableAnimation.getValue(), (int) enableAnimation.getValue()).getRGB());
+        smallFontRenderer.drawCenteredString(module.getKeycode() == 0 || module.getKeycode() == -1 ? "" : (Keyboard.getKeyName(module.getKeycode()).length() > 2 ? Keyboard.getKeyName(module.getKeycode()).substring(0, 2) : Keyboard.getKeyName(module.getKeycode())), x + 10.5f, y + 5.5f, new Color((int) enableAnimation.getValue(), (int) enableAnimation.getValue(), (int) enableAnimation.getValue()).getRGB());
 
         if(!module.getSettings().isEmpty())
             fontRenderer.drawCenteredString("+", x + 117, y + 4f, 0x40ffffff);

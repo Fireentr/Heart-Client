@@ -20,7 +20,7 @@ public class ClickguiScreen extends GuiScreen {
         components = new ArrayList<>();
 
 
-        components.add(new CategoryCompontenent(Category.COMBAT, 'a', 24, 44));
+        components.add(new CategoryCompontenent(Category.COMBAT, '\uF71D', 24, 44));
         components.add(new CategoryCompontenent(Category.MOVEMENT, 'a', 164, 44));
         components.add(new CategoryCompontenent(Category.VISUAL, 'a', 304, 44));
         components.add(new CategoryCompontenent(Category.PLAYER, 'a', 444, 44));

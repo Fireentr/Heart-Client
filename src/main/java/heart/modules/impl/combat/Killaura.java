@@ -16,6 +16,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 import static heart.events.impl.Direction.POST;
 
@@ -26,7 +30,7 @@ public class Killaura extends Module {
     }
     EnumSetting<sortingMode> sortingModeSetting = new EnumSetting<>("Sort", "Sets the way entities get sorted.", sortingMode.values());
     EnumSetting<autoBlockMode> autoBlockSetting = new EnumSetting<>("AutoBlock", "AutoBlock Type.", autoBlockMode.values());
-    BoolSetting attackOtherEntities = new BoolSetting("Atack non-players", "Attack other entities.", false);
+    BoolSetting attackOtherEntities = new BoolSetting("Attack non-players", "Attack other entities.", false);
     EnumSetting<EasingStyle> rotationEasingSetting = new EnumSetting<>("Easing", "Sets the way entities get sorted.", EasingStyle.values());
 
 
@@ -38,6 +42,7 @@ public class Killaura extends Module {
     int i = 0;
     @Override
     public void onTick(TickEvent e){
+        EntityPlayer entityPlayer = mc.thePlayer;
         if (e.direction.equals(POST))
             return;
 
@@ -62,16 +67,22 @@ public class Killaura extends Module {
         if(getTarget() != null) {
             if (mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
                 switch (autoBlockSetting.getValue()) {
-                    case VANILLA:
-                        // Vanilla AB
+                    case PACKET:
+                        entityPlayer.itemInUseCount = 1;
+                        mc.thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
+                        break;
                     case FAKE:
-                        EntityPlayer.itemInUseCount = 1;
+                        entityPlayer.itemInUseCount = 1;
+                        break;
                 }
             }
 
             Minecraft.getMinecraft().thePlayer.swingItem();
             Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, getTarget());
-        } else EntityPlayer.itemInUseCount = 0;
+        } else {
+            if (autoBlockSetting.getValue().equals(autoBlockMode.PACKET)) new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
+            if(!mc.gameSettings.keyBindUseItem.isPressed()) entityPlayer.itemInUseCount = 0;
+        }
     }
 
 
@@ -94,7 +105,7 @@ public class Killaura extends Module {
         super.onRotate(e);
     }
 
-    public Minecraft mc= Minecraft.getMinecraft();
+    public Minecraft mc = Minecraft.getMinecraft();
 
     public EntityLivingBase getTarget() {
         EntityLivingBase target = null;
@@ -103,7 +114,7 @@ public class Killaura extends Module {
 
         for (Entity entity : Minecraft.getMinecraft().theWorld.loadedEntityList) {
             if(entity instanceof EntityLivingBase) {
-                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive() && !(entity instanceof EntityArmorStand)) {
+                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 3.1 && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive() && !(entity instanceof EntityArmorStand)) {
                     switch (sortingModeSetting.getValue()){
                         case HEALTH:
                             if(((EntityLivingBase) entity).getHealth() > max){
@@ -141,7 +152,9 @@ public class Killaura extends Module {
 
     @Override
     public void onDisable() {
-        EntityPlayer.itemInUseCount = 0;
+        if (autoBlockSetting.getValue().equals(autoBlockMode.PACKET)) new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
+        EntityPlayer entityPlayer = mc.thePlayer;
+        if(!mc.gameSettings.keyBindUseItem.isPressed()) entityPlayer.itemInUseCount = 0;
         super.onDisable();
     }
 }
@@ -151,5 +164,5 @@ enum sortingMode {
 }
 
 enum autoBlockMode {
-    NONE, FAKE, VANILLA
+    NONE, FAKE, PACKET
 }
