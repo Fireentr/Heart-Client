@@ -73,21 +73,24 @@ public class ModeSettingPart extends Part {
             open = !open;
         }
 
-        int i = 1;
-        for (Mode m : modeSetting.getModes()) {
-            if(x > xpos && x < xpos + 124 && y > ypos + i * 20 && y < ypos + i * 20 + 20) {
-                for(Mode mo : modeSetting.getModes()) {
-                    if(mo.isEnabled()){
-                        mo.setEnabled(false);
+        if(dynamicAnimation.getValue() > 10){
+            int i = 1;
+            for (Mode m : modeSetting.getModes()) {
+                if (x > xpos && x < xpos + 124 && y > ypos + i * 20 && y < ypos + i * 20 + 20) {
+                    for (Mode mo : modeSetting.getModes()) {
+                        if (mo.isEnabled()) {
+                            mo.setEnabled(false);
+                        }
+                        if (m.equals(mo)) {
+                            modeSetting.setSelected(m);
+                            m.setEnabled(true);
+                        }
                     }
-                    if(m.equals(mo)) {
-                        modeSetting.setSelected(m);
-                    }
+                    modeSetting.setSelected(m);
+                    System.out.println(m.getName());
                 }
-                modeSetting.setSelected(m);
-                System.out.println(m.getName());
+                i++;
             }
-            i++;
         }
         super.onMouseClick(x, y, button);
     }

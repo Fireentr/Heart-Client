@@ -74,7 +74,7 @@ public class EnumSettingPart<E extends Enum<E>> extends Part {
 
     @Override
     public void onMouseClick(int x, int y, int button) {
-        if(hovered && button == 1 && dynamicAnimation.getValue() > dynamicAnimation.targetValue - 1) {
+        if(hovered && dynamicAnimation.getValue() > dynamicAnimation.targetValue - 1) {
             open = !open;
         }
 
