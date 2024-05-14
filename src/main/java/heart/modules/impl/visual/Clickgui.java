@@ -4,6 +4,7 @@ import heart.Heart;
 import heart.modules.Category;
 import heart.modules.Module;
 import heart.ui.clickgui.ClickguiScreen;
+import heart.util.ChatUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngameMenu;

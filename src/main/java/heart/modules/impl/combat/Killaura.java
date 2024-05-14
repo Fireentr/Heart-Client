@@ -7,6 +7,7 @@ import heart.modules.Module;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.DoubleSetting;
 import heart.modules.settings.impl.EnumSetting;
+import heart.util.ChatUtil;
 import heart.util.RotationUtil;
 import heart.util.animation.EasingStyle;
 import net.minecraft.client.Minecraft;
@@ -19,9 +20,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.play.client.C02PacketUseEntity;
 import org.lwjgl.input.Mouse;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static heart.events.impl.Direction.POST;
 
@@ -32,10 +39,12 @@ public class Killaura extends Module {
     }
 
     DoubleSetting apsSetting = new DoubleSetting("APS", "Sets the killaura's APS/CPS.", 1, 20, 12, 10);
+    DoubleSetting reachSetting = new DoubleSetting("Range", "Sets the KillAura's Range/Reach.", 0, 6, 3, 10);
     EnumSetting<sortingMode> sortingModeSetting = new EnumSetting<>("Sort", "Sets the way entities get sorted.", sortingMode.values());
     EnumSetting<autoBlockMode> autoBlockSetting = new EnumSetting<>("AutoBlock", "AutoBlock Type.", autoBlockMode.values());
+    BoolSetting keepSprint = new BoolSetting("Allow Sprinting", "Keep sprinting whilst attacking.", false);
     BoolSetting attackOtherEntities = new BoolSetting("Atack non-players", "Attack other entities.", false);
-    EnumSetting<autoBlockMode> targetHudSetting = new EnumSetting<>("Target HUD", "Displays a HUD element that gives info about targets.", autoBlockMode.values());
+    EnumSetting<targetHudModes> targetHudSetting = new EnumSetting<>("Target HUD", "Displays a HUD element that gives info about targets.", targetHudModes.values());
     EnumSetting<EasingStyle> rotationEasingSetting = new EnumSetting<>("Easing", "Sets the way entities get sorted.", EasingStyle.values());
 
     @Override
@@ -43,9 +52,12 @@ public class Killaura extends Module {
         return sortingModeSetting.getDisplayName();
     }
 
+    Timer clickTimer = new Timer();
+
+
     int i = 0;
-    long nanoDelay = 0;
-    long lastUpdateTime = 0;
+    AtomicBoolean shouldAttack = new AtomicBoolean(false);
+    List<TimerTask> scheduledTasks = new ArrayList<>();
 
     @Override
     public void onTick(TickEvent e){
@@ -53,49 +65,66 @@ public class Killaura extends Module {
             return;
 
 
+        long timeDelay = (long) (((1000 / apsSetting.getValue())));
         i++;
-        if (i > 20){
-            i = 0;
-            nanoDelay = (long) (1_000_000_000L / apsSetting.getValue());
-            lastUpdateTime = System.nanoTime();
-        }
+        if(i > 20) {
+            for (TimerTask task : scheduledTasks) {
+                task.cancel();
+            }
+            scheduledTasks.clear();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    shouldAttack.set(true);
+                }
+            };
+            if(apsSetting.getValue() != 20) {
 
-        long currentTime = System.nanoTime();
-        long elapsedTime = currentTime - lastUpdateTime;
+                System.out.println((timeDelay));
+                clickTimer.scheduleAtFixedRate(timerTask, 0, timeDelay);
+                scheduledTasks.add(timerTask);
+            }
+            i = 0;
+        }
 
         boolean hasSwung = false;
 
-        if(sortingModeSetting.getValue() == sortingMode.MULTI){
+        if(sortingModeSetting.getValue() == sortingMode.MULTI && (shouldAttack.get() || apsSetting.getValue() == 20)){
             for (Entity entity : Minecraft.getMinecraft().theWorld.getLoadedEntityList()) {
                 if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 3.1 && (entity instanceof EntityPlayer || entity instanceof EntityCreature) && !(entity instanceof EntityArmorStand)) {
-                    if (elapsedTime >= nanoDelay) {
-                        if (!hasSwung)
-                            Minecraft.getMinecraft().thePlayer.swingItem();
-                        hasSwung = true;
-                        Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, entity);
+                    if (!hasSwung) {
+                        Minecraft.getMinecraft().thePlayer.swingItem();
                     }
+                    Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, entity);
+                    hasSwung = true;
                 }
             }
             return;
         }
         if(getTarget() != null) {
-            if (mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
-                switch (autoBlockSetting.getValue()) {
-                    default:
+            if (mc.thePlayer.getHeldItem() != null) {
+                if (mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
+                    switch (autoBlockSetting.getValue()) {
+                        default:
 
-                        break;
-                    case VANILLA:
-                        // Vanilla AB
-                        break;
-                    case FAKE:
-                        mc.thePlayer.itemInUseCount = 1;
-                        break;
+                            break;
+                        case VANILLA:
+                            // Vanilla AB
+                            break;
+                        case FAKE:
+                            mc.thePlayer.itemInUseCount = 1;
+                            break;
+                    }
                 }
             }
 
-            if (elapsedTime >= nanoDelay) {
+            if (shouldAttack.get() || apsSetting.getValue() == 20) {
                 Minecraft.getMinecraft().thePlayer.swingItem();
-                Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, getTarget());
+                if (keepSprint.getValue())
+                    mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(getTarget(), C02PacketUseEntity.Action.ATTACK));
+                else
+                    Minecraft.getMinecraft().playerController.attackEntity(Minecraft.getMinecraft().thePlayer, getTarget());
+                shouldAttack.set(false);
             }
         } else if(!GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem)) mc.thePlayer.itemInUseCount = 0;
     }
@@ -109,8 +138,8 @@ public class Killaura extends Module {
         if(target != null){
             float[] rots = RotationUtil.getRotations(target.posX, target.posY + target.getEyeHeight(), target.posZ);
 
-            e.setPitch(rots[0]);
-            e.setYaw(rots[1]);
+            e.setPitch(rots[1]);
+            e.setYaw(rots[0]);
 
             mc.thePlayer.rotationYawHead = rots[0];
             mc.thePlayer.rotationPitchHead = rots[1];

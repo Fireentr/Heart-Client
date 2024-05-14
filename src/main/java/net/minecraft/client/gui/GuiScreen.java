@@ -18,6 +18,7 @@ import java.util.Set;
 
 import heart.Heart;
 import heart.commands.Command;
+import heart.util.ChatUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.stream.GuiTwitchUserMode;
 import net.minecraft.client.renderer.GlStateManager;
@@ -83,6 +84,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
     {
         if (keyCode == 1)
         {
+            if (mc.currentScreen == Heart.getClickgui() && mc.thePlayer.itemInUseCount > 0) mc.thePlayer.itemInUseCount = 0;
             this.mc.displayGuiScreen((GuiScreen)null);
 
             if (this.mc.currentScreen == null)

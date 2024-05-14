@@ -1142,8 +1142,8 @@ public abstract class EntityLivingBase extends Entity
 
     private int getArmSwingAnimationEnd()
     {
-        // TODO: Make this use animation setting
-        int swingTime = 8;
+        Animations animations = (Animations) Heart.getModuleManager().getModule("animations");
+        int swingTime = (int) (6 / animations.speedSetting.getValue());
         return this.isPotionActive(Potion.digSpeed) ? swingTime - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) : (this.isPotionActive(Potion.digSlowdown) ? swingTime + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : swingTime);
     }
 

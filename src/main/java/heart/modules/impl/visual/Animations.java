@@ -32,16 +32,17 @@ public class Animations extends Module {
     }
 
     EnumSetting<AnimationOptions> animationOptions = new EnumSetting<>("Animation Style", "Select the animation style.", AnimationOptions.values());
-    DoubleSetting speedSetting = new DoubleSetting("Speed", "Sets the animation speed", 0.1d, 2d, 1d, 5);
+    public DoubleSetting speedSetting = new DoubleSetting("Speed", "Sets the animation speed", 0.1d, 2d, 1d, 5);
     DoubleSetting scaleSetting = new DoubleSetting("Scale", "Sets the item scale", 0.1d, 1.5d, 1d, 10);
     DoubleSetting xOffsetSetting = new DoubleSetting("X Offset", "Moves the item on the X axis", 0.1d, 1.5d, 1d, 10);
     DoubleSetting yOffsetSetting = new DoubleSetting("Y Offset", "Moves the item on the Y axis", 0.1d, 1.5d, 1d, 10);
     public BoolSetting fluxHit = new BoolSetting("Flux Swing", "Alternative swinging animation.", false);
 
+    public BoolSetting preview = new BoolSetting("Preview", "Preview blocking position.", true);
+
     public void Animate(ItemRenderer itemRenderer, float fv, float f1v, float funnyvar1v){
-        float f = (float) (speedSetting.getValue() * fv);
-        float f1 = (float) (speedSetting.getValue() * f1v);
-        float funnyvar1 = (float) (speedSetting.getValue() * funnyvar1v);
+        float f = fv;
+        float f1 = f1v;
 
         GlStateManager.translate(xOffsetSetting.getValue() - 1, yOffsetSetting.getValue() - 1, scaleSetting.getValue() - 1);
 
@@ -57,14 +58,14 @@ public class Animations extends Module {
                 break;
             case EXHI:
                 itemRenderer.transformFirstPersonItem(f / 2.0F, 0.0F);
-                GL11.glRotatef(-funnyvar1 * 40.0F / 2.0F, funnyvar1 / 2.0F, -0.0F, 9.0F);
-                GL11.glRotatef(-funnyvar1 * 30.0F, 1.0F, funnyvar1 / 2.0F, -0.0F);
+                GL11.glRotatef(-funnyvar1v * 40.0F / 2.0F, funnyvar1v / 2.0F, -0.0F, 9.0F);
+                GL11.glRotatef(-funnyvar1v * 30.0F, 1.0F, funnyvar1v / 2.0F, -0.0F);
                 itemRenderer.doBlockTransformations();
                 break;
             case EXHINEW:
                 itemRenderer.transformFirstPersonItem(f / 2.0F, 0.0F);
-                GL11.glRotatef(-funnyvar1 * 70.0F / 2.0F, funnyvar1 / 2.0F, -0.0F, 9.0F);
-                GL11.glRotatef(-funnyvar1 * 50.0F, 1.0F, funnyvar1 / 2.0F, -0.0F);
+                GL11.glRotatef(-funnyvar1v * 70.0F / 2.0F, funnyvar1v / 2.0F, -0.0F, 9.0F);
+                GL11.glRotatef(-funnyvar1v * 50.0F, 1.0F, funnyvar1v / 2.0F, -0.0F);
                 itemRenderer.doBlockTransformations();
                 break;
             case SIGMA:

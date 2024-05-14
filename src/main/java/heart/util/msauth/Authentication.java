@@ -1,17 +1,30 @@
 package heart.util.msauth;
 
-import heart.util.msauth.http.HttpClient;
-import heart.util.msauth.http.HttpRequest;
-import heart.util.msauth.http.HttpResponse;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import java.io.StringReader;
-import java.net.URI;
+
+import heart.util.msauth.http.HttpClient;
+import heart.util.msauth.http.HttpRequest;
+import heart.util.msauth.http.HttpResponse;
 
 public class Authentication {
     
+    // we are using essential's client id as we need to apply for a forum so minecraft verifies your azure app client id, so to prevent that process we are using a one that is allready accepted
     public static final String CLIENT_ID = "e39cc675-eb52-4475-b5f8-82aaae14eeba";
     public static final String REDIRECT_URI = "http://localhost:6921/microsoft/complete";
 

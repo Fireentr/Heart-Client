@@ -16,6 +16,7 @@ public class Verus extends Mode {
     BoolSetting jumpBoostYportSetting = new BoolSetting("Jump Boost YPort", "", false);
 
     public void onTick(TickEvent e){
+        mc.thePlayer.setSprinting(true);
         if (mc.thePlayer.motionY > 0 && !mc.gameSettings.keyBindJump.isPressed() && !mc.thePlayer.onGround && lowHopSetting.getValue()) mc.thePlayer.motionY = MotionUtil.getChunkloadMotion();
 
         // Verus Bhop

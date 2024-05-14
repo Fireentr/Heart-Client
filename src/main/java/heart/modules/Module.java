@@ -1,6 +1,7 @@
 package heart.modules;
 
 import heart.Heart;
+import heart.events.impl.PacketEvent;
 import heart.events.impl.Render2DEvent;
 import heart.events.impl.RotationEvent;
 import heart.events.impl.TickEvent;
@@ -184,6 +185,11 @@ public class Module {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRotate(RotationEvent e){
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPacket(PacketEvent e){
 
     }
 }

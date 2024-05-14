@@ -1,12 +1,16 @@
 package heart.ui.clickgui.components.impl.partimpl;
 
+import heart.Heart;
 import heart.modules.Module;
+import heart.modules.impl.visual.Animations;
 import heart.modules.settings.impl.*;
 import heart.ui.clickgui.components.impl.Part;
 import heart.ui.clickgui.components.impl.partimpl.settings.*;
+import heart.util.ChatUtil;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
 import heart.util.shader.impl.RoundedRectShader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
@@ -103,6 +107,12 @@ public class ModulePart extends Part {
 
         hoveringKeybind = mouseX > x && mouseX < x + 14 && mouseY > y && mouseY < y + 20;
         hoveringModule = mouseX > x + 14 && mouseX < x + 111 && mouseY > y && mouseY < y + 20;
+
+        if (module.getName().equals("Animations")) {
+            Animations animations = (Animations) Heart.getModuleManager().getModule("animations");
+            if (open2) Minecraft.getMinecraft().thePlayer.itemInUseCount = 1;
+            else if (!Heart.getModuleManager().getModule("killaura").isEnabled()) Minecraft.getMinecraft().thePlayer.itemInUseCount = 0;
+        }
 
         int i = 0;
         for (Part part : subParts) {
