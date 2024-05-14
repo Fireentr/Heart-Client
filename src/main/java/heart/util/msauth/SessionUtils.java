@@ -1,29 +1,19 @@
 package heart.util.msauth;
 
-import java.awt.Desktop;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
-import javax.json.Json;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import sun.awt.datatransfer.ClipboardTransferable;
+
 import javax.json.JsonObject;
-import javax.json.JsonReader;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.SecureRandom;
 
 public class SessionUtils {
 
@@ -71,7 +61,14 @@ public class SessionUtils {
 							+ "&code_challenge=" + Base64.encodeBase64URLSafeString(DigestUtils.sha256(recentPkce))
 							+ "&response_type=code" + "&redirect_uri=" + Authentication.REDIRECT_URI));
 		} else {
-			WebServer.server.stop(0);
+			String myString = "https://login.live.com/oauth20_authorize.srf?"
+					+ "client_id=" + Authentication.CLIENT_ID + "&prompt=select_account"
+					+ "&scope=Xboxlive.signin+Xboxlive.offline_access" + "&code_challenge_method=S256"
+					+ "&code_challenge=" + Base64.encodeBase64URLSafeString(DigestUtils.sha256(recentPkce))
+					+ "&response_type=code" + "&redirect_uri=" + Authentication.REDIRECT_URI;
+			StringSelection stringSelection = new StringSelection(myString);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(stringSelection, null);
 		}
 	}
 

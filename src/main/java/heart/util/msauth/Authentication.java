@@ -1,30 +1,18 @@
 package heart.util.msauth;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
 import heart.util.msauth.http.HttpClient;
 import heart.util.msauth.http.HttpRequest;
 import heart.util.msauth.http.HttpResponse;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URI;
+
 public class Authentication {
     
-    // we are using essential's client id as we need to apply for a forum so minecraft verifies your azure app client id, so to prevent that process we are using a one that is allready accepted
     public static final String CLIENT_ID = "e39cc675-eb52-4475-b5f8-82aaae14eeba";
     public static final String REDIRECT_URI = "http://localhost:6921/microsoft/complete";
 
@@ -134,20 +122,20 @@ public class Authentication {
             .header("Authorization", "Bearer " + accessToken)
             .GET()
             .build();
-        
-        // We to send the request & if it throws an error, return null, if it does not then return the request response
-        try {
-            // Send the request
-            HttpResponse response = client.send(request);
 
-            // Read & parse the json data provided, this is where it could error
-            JsonReader jsonReader = Json.createReader(new StringReader(response.body()));
-            JsonObject jsonObject = jsonReader.readObject();
-            jsonReader.close();
-            
-            return jsonObject;
-        } catch (Exception e) {
-            return null;
+            // Send the request
+        HttpResponse response = null;
+        try {
+            response = client.send(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        // Read & parse the json data provided, this is where it could error
+        JsonReader jsonReader = Json.createReader(new StringReader(response.body()));
+        JsonObject jsonObject = jsonReader.readObject();
+        jsonReader.close();
+
+        return jsonObject;
     }
 }
