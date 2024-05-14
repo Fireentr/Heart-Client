@@ -138,7 +138,7 @@ public class Hud extends Module {
             case DUAL:
                 return ColorUtil.colorWave(color1.getValue(), color2.getValue(), offset, speed);
             case RAINBOW:
-                return new Color(ColorUtil.getChillRainbow(0));
+                return new Color(ColorUtil.getChillRainbow(offset));
             case ASTOLFO:
                 return new Color( ColorUtil.getAstolfoRainbow(offset, speed, 1f, 0.45f));
 
@@ -189,7 +189,7 @@ class ArraylistModule {
             if(animationX.getValue() > animationX.targetValue - 4)
                 animationY.setTarget(12);
         }
-
-        Heart.getHud().fontRenderer.drawStringWithShadow(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, Color.WHITE.getRGB());
+        Hud hud = (Hud) Heart.getModuleManager().getModule("hud");
+        Heart.getHud().fontRenderer.drawStringWithShadow(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, hud.getColor((int) yOffset * 5, 1).getRGB());
     }
 }

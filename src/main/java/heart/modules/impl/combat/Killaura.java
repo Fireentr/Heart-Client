@@ -91,7 +91,7 @@ public class Killaura extends Module {
 
         if(sortingModeSetting.getValue() == sortingMode.MULTI && (shouldAttack.get() || apsSetting.getValue() == 20)){
             for (Entity entity : Minecraft.getMinecraft().theWorld.getLoadedEntityList()) {
-                if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 3.1 && (entity instanceof EntityPlayer || entity instanceof EntityCreature) && !(entity instanceof EntityArmorStand)) {
+                if (entity != Minecraft.getMinecraft().thePlayer && entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= reachSetting.getValue() && (entity instanceof EntityPlayer || entity instanceof EntityCreature) && !(entity instanceof EntityArmorStand)) {
                     if (!hasSwung) {
                         Minecraft.getMinecraft().thePlayer.swingItem();
                     }
@@ -158,7 +158,7 @@ public class Killaura extends Module {
 
         for (Entity entity : Minecraft.getMinecraft().theWorld.loadedEntityList) {
             if(entity instanceof EntityLivingBase) {
-                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= 6.0 && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive() && !(entity instanceof EntityArmorStand)) {
+                if (entity.getDistanceToEntity(Minecraft.getMinecraft().thePlayer) <= reachSetting.getValue() && entity != Minecraft.getMinecraft().thePlayer && entity.isEntityAlive() && !(entity instanceof EntityArmorStand)) {
                     switch (sortingModeSetting.getValue()){
                         case HEALTH:
                             if(((EntityLivingBase) entity).getHealth() > max){

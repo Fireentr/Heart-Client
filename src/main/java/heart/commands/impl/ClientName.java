@@ -12,8 +12,8 @@ public class ClientName extends Command {
 
     @Override
     public void runCommand(String[] arguments) {
-        if (arguments.length == 2 && arguments[1] != null) {
-            ((Hud) Heart.getModuleManager().getModule("hud")).setClientName(arguments[1]);
+        if (arguments.length > 1 && arguments[1] != null) {
+            ((Hud) Heart.getModuleManager().getModule("hud")).setClientName(String.join(" ", arguments).replace(arguments[0], "").substring(1));
         }
         super.runCommand(arguments);
     }

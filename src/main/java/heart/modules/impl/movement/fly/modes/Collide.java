@@ -22,6 +22,5 @@ public class Collide extends Mode {
     public void onAirBB(AirBBEvent e) {
         if (e.pos.getY() <= startY - 1)
             e.aabb = new AxisAlignedBB((double) (e.pos.getX() + e.block.minX), (double) (e.pos.getY() + e.block.minY), (double) (e.pos.getZ() + e.block.minZ), (double) (e.pos.getX() + e.block.maxX), (double) (e.pos.getY() + e.block.maxY), (double) (e.pos.getZ() + e.block.maxZ));
-
     }
 }

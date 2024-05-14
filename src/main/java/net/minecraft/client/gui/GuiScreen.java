@@ -441,7 +441,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
 
 
         if(msg.startsWith(".") && addToChat){
-            String[] messageSplit = msg.replace(".", "").split(" ");
+            String[] messageSplit = msg.substring(1).split(" ");
             Command command = Heart.getCommandManager().getCommand(messageSplit[0]);
             if(command != null){
                 command.runCommand(messageSplit);

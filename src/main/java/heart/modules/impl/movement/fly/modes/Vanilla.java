@@ -13,8 +13,14 @@ public class Vanilla extends Mode {
         super("Vanilla", "Vanilla fly");
     }
 
+    @Override
+    public void onEnable() {
+        super.onEnable();
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTick(TickEvent e){
+
         MotionUtil.strafe(1.0);
         mc.thePlayer.motionY = 0;
         if(mc.gameSettings.keyBindJump.isKeyDown()){
