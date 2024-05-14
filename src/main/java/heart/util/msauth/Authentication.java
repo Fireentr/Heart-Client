@@ -7,6 +7,7 @@ import heart.util.msauth.http.HttpResponse;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 
@@ -121,20 +122,20 @@ public class Authentication {
             .header("Authorization", "Bearer " + accessToken)
             .GET()
             .build();
-        
-        // We to send the request & if it throws an error, return null, if it does not then return the request response
-        try {
-            // Send the request
-            HttpResponse response = client.send(request);
 
-            // Read & parse the json data provided, this is where it could error
-            JsonReader jsonReader = Json.createReader(new StringReader(response.body()));
-            JsonObject jsonObject = jsonReader.readObject();
-            jsonReader.close();
-            
-            return jsonObject;
-        } catch (Exception e) {
-            return null;
+            // Send the request
+        HttpResponse response = null;
+        try {
+            response = client.send(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        // Read & parse the json data provided, this is where it could error
+        JsonReader jsonReader = Json.createReader(new StringReader(response.body()));
+        JsonObject jsonObject = jsonReader.readObject();
+        jsonReader.close();
+
+        return jsonObject;
     }
 }

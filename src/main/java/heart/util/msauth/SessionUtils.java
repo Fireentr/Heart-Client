@@ -4,9 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+import sun.awt.datatransfer.ClipboardTransferable;
 
 import javax.json.JsonObject;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,7 +61,14 @@ public class SessionUtils {
 							+ "&code_challenge=" + Base64.encodeBase64URLSafeString(DigestUtils.sha256(recentPkce))
 							+ "&response_type=code" + "&redirect_uri=" + Authentication.REDIRECT_URI));
 		} else {
-			WebServer.server.stop(0);
+			String myString = "https://login.live.com/oauth20_authorize.srf?"
+					+ "client_id=" + Authentication.CLIENT_ID + "&prompt=select_account"
+					+ "&scope=Xboxlive.signin+Xboxlive.offline_access" + "&code_challenge_method=S256"
+					+ "&code_challenge=" + Base64.encodeBase64URLSafeString(DigestUtils.sha256(recentPkce))
+					+ "&response_type=code" + "&redirect_uri=" + Authentication.REDIRECT_URI;
+			StringSelection stringSelection = new StringSelection(myString);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(stringSelection, null);
 		}
 	}
 
