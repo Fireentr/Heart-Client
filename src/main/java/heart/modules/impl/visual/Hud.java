@@ -4,6 +4,7 @@ import heart.Heart;
 import heart.events.impl.Render2DEvent;
 import heart.modules.Category;
 import heart.modules.Module;
+import heart.modules.ModuleManager;
 import heart.modules.settings.Requirement;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.ColorSetting;
@@ -37,6 +38,10 @@ enum watermarkOptions {
 
 enum colorOptions {
     STATIC, WAVE, DUAL, RAINBOW, ASTOLFO
+}
+
+enum animationOptions {
+    DEFAULT, NONE, LINEAR, NOVOLINE
 }
 
 public class Hud extends Module {
@@ -77,6 +82,7 @@ public class Hud extends Module {
     EnumSetting<watermarkOptions> watermark = (EnumSetting<watermarkOptions>) new EnumSetting<>("Watermark Mode", "Sets the client watermark.", watermarkOptions.values()).addRequirement(new Requirement(watermarkBool, true));
 
     EnumSetting<colorOptions> color = new EnumSetting<>("Color Mode", "Sets the huds color mode.", colorOptions.values());
+    EnumSetting<animationOptions> arraylistAnimation = new EnumSetting<>("Arraylist Animation", "Changes the arraylist animations.", animationOptions.values());
 
     ColorSetting color1 = new ColorSetting("Theme Color", "Sets the theme color.", new Color(255, 40, 40));
     ColorSetting color2 = new ColorSetting("Accent Color", "Sets the accent color.", new Color(173, 33, 255));
@@ -134,13 +140,13 @@ public class Hud extends Module {
             default:
                 return color1.getValue();
             case WAVE:
-                return ColorUtil.colorWave(color1.getValue(), color1.getValue().darker(), offset, speed);
+                return ColorUtil.colorWave(color1.getValue(), color1.getValue().darker().darker(), offset, speed);
             case DUAL:
                 return ColorUtil.colorWave(color1.getValue(), color2.getValue(), offset, speed);
             case RAINBOW:
-                return new Color(ColorUtil.getChillRainbow(offset));
+                return new Color(ColorUtil.getChillRainbow(-offset));
             case ASTOLFO:
-                return new Color( ColorUtil.getAstolfoRainbow(offset, speed, 1f, 0.45f));
+                return new Color( ColorUtil.getAstolfoRainbow(-offset, speed, 1f, 0.45f));
 
         }
     }
@@ -179,17 +185,56 @@ class ArraylistModule {
 
     public void draw(){
         ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-        if(module.isEnabled()){
-            animationY.setTarget(0);
-            if(animationY.getValue() < 2)
-                animationX.setTarget(0);
-        }else {
+        animate();
+        Heart.getHud().fontRenderer.drawStringWithShadow(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+    }
 
-            animationX.setTarget(getWidth());
-            if(animationX.getValue() > animationX.targetValue - 4)
-                animationY.setTarget(12);
+    void animate(){
+        switch (((Hud) Heart.getModuleManager().getModule("hud")).arraylistAnimation.getValue()){
+            case DEFAULT:
+                animationX.getAnim().setEasing(EasingStyle.ExpoOut);
+                animationY.getAnim().setEasing(EasingStyle.ExpoOut);
+                if(this.module.isEnabled()){
+                    animationY.setTarget(0);
+                    animationX.setTarget(0);
+                }else {
+                    animationX.setTarget(getWidth());
+                    animationY.setTarget(12);
+                }
+                break;
+            case LINEAR:
+                animationX.getAnim().setEasing(EasingStyle.Linear);
+                animationY.getAnim().setEasing(EasingStyle.Linear);
+                if(this.module.isEnabled()){
+                    animationY.setTarget(0);
+                    animationX.setTarget(0);
+                }else {
+                    animationX.setTarget(getWidth());
+                    animationY.setTarget(12);
+                }
+                break;
+            case NOVOLINE:
+                animationX.getAnim().setEasing(EasingStyle.ExpoOut);
+                animationY.getAnim().setEasing(EasingStyle.ExpoOut);
+                if(this.module.isEnabled()){
+                    animationY.setTarget(0);
+                    if(animationY.getValue() < 2)
+                        animationX.setTarget(0);
+                }else {
+                    animationX.setTarget(getWidth());
+                    if(animationX.getValue() > animationX.targetValue - 4)
+                        animationY.setTarget(12);
+                }
+                break;
+            case NONE:
+                animationX.getAnim().setEasing(EasingStyle.ExpoOut);
+                animationY.getAnim().setEasing(EasingStyle.ExpoOut);
+                animationY.setTarget(this.module.isEnabled() ? 0 : 12);
+                animationX.setTarget(this.module.isEnabled() ? 0 : getWidth());
+
+                animationX.snapTo(this.animationX.targetValue);
+                animationY.snapTo(this.animationY.targetValue);
+                break;
         }
-        Hud hud = (Hud) Heart.getModuleManager().getModule("hud");
-        Heart.getHud().fontRenderer.drawStringWithShadow(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, hud.getColor((int) yOffset * 5, 1).getRGB());
     }
 }

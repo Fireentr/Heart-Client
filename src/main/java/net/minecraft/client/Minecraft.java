@@ -1044,6 +1044,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         this.mcProfiler.endSection();
 
+
         if (!this.skipRenderWorld)
         {
             this.mcProfiler.endStartSection("gameRenderer");
@@ -1615,6 +1616,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
 
         this.mcProfiler.startSection("gui");
+
 
         if (!this.isGamePaused)
         {

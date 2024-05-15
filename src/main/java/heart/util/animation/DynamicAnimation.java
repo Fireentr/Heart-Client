@@ -14,6 +14,10 @@ public class DynamicAnimation {
         this.targetValue = newTarget;
     }
 
+    public Animation getAnim() {
+        return anim;
+    }
+
     public void snapTo(float newTarget) {
         currentValue = newTarget;
         targetValue = newTarget;

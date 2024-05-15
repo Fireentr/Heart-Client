@@ -1,6 +1,7 @@
 package heart.util.animation;
 
 public enum EasingStyle {
+    Linear,
     SineIn,
     SineOut,
     SineInOut,

@@ -1,7 +1,7 @@
 package heart.util.animation;
 
 public class Animation {
-    public EasingStyle easing = EasingStyle.ExpoOut;
+    EasingStyle easing;
     public long max;
     long cTime; // current time
     public boolean done = false;
@@ -18,6 +18,10 @@ public class Animation {
         done = false;
         tim.reset();
         cTime = 0;
+    }
+
+    public void setEasing(EasingStyle easingStyle) {
+        easing = easingStyle;
     }
 
     public void updateTime() {
@@ -39,7 +43,9 @@ public class Animation {
         float bufVal = ((float) cTime)/((float)max);
 
         switch (easing) {
-
+            case Linear:
+                finVal = bufVal*10;
+                break;
             case SineIn:
                 finVal = EasingUtil.easeInSine(bufVal);
                 break;
