@@ -134,7 +134,6 @@ public class Killaura extends Module {
     @Override
     public void onRotate(RotationEvent e) {
         Entity target = getTarget();
-        e.setPitch(4);
         if(target != null){
             float[] rots = RotationUtil.getRotations(target.posX, target.posY + target.getEyeHeight(), target.posZ);
 
