@@ -71,11 +71,11 @@ public class Hud extends Module {
     }
 
     @Override
-    public void onEnable() {
+    public void initmodule() {
         arraylistModules.clear();
-        Heart.getModuleManager().getModules().forEach((key, value) -> arraylistModules.add(new ArraylistModule(value))
+            Heart.getModuleManager().getModules().forEach((key, value) -> arraylistModules.add(new ArraylistModule(value))
         );
-        super.onEnable();
+        super.initmodule();
     }
 
     BoolSetting watermarkBool = new BoolSetting("Watermark", "Enables the client watermark.", true);
