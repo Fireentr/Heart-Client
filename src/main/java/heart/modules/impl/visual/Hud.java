@@ -27,10 +27,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 enum watermarkOptions {
     SIMPLE, BAR, IMAGE, WORDART
@@ -72,9 +69,19 @@ public class Hud extends Module {
 
     @Override
     public void initmodule() {
-        arraylistModules.clear();
-            Heart.getModuleManager().getModules().forEach((key, value) -> arraylistModules.add(new ArraylistModule(value))
-        );
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                arraylistModules.clear();
+                Heart.getModuleManager().getModules().forEach((key, value) -> {
+                    ArraylistModule arval = new ArraylistModule(value);
+                    arraylistModules.add(new ArraylistModule(value));
+                });
+            }
+        }, 1000);
+
         super.initmodule();
     }
 
@@ -187,6 +194,16 @@ class ArraylistModule {
         ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
         animate();
         Heart.getHud().fontRenderer.drawStringWithShadow(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+    }
+
+    void init(){
+        animationX.getAnim().setEasing(EasingStyle.ExpoOut);
+        animationY.getAnim().setEasing(EasingStyle.ExpoOut);
+        animationY.setTarget(this.module.isEnabled() ? 0 : 12);
+        animationX.setTarget(this.module.isEnabled() ? 0 : getWidth());
+
+        animationX.snapTo(this.animationX.targetValue);
+        animationY.snapTo(this.animationY.targetValue);
     }
 
     void animate(){
