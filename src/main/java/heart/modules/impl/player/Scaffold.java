@@ -6,6 +6,7 @@ import heart.modules.Category;
 import heart.modules.Module;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.DoubleSetting;
+import heart.modules.settings.impl.EnumSetting;
 import heart.util.PacketUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
@@ -21,6 +22,14 @@ public class Scaffold extends Module {
     }
 
     BlockPos targetBlock = new BlockPos(0, 0, 0);
+
+    enum TowerOptions {
+        NONE,
+        VANILLA,
+        VULCAN
+    }
+
+    EnumSetting<TowerOptions> towerOption = new EnumSetting<>("Tower", "Choose tower mode.", TowerOptions.values());
 
     BoolSetting downwardSetting = new BoolSetting("Downward", "Allows scaffold to go downward", false);
     BoolSetting keepy =  new BoolSetting("Keep Y", "Keeps scaffold bound to the Y-axis", false);
@@ -45,6 +54,24 @@ public class Scaffold extends Module {
     @Override
     public void onTick(TickEvent e) {
         mc.timer.timerSpeed = ((float) timerBoost.getValue());
+
+        if (mc.gameSettings.keyBindJump.isKeyDown() && !mc.theWorld.isAirBlock(targetBlock)) {
+            switch (towerOption.getValue()) {
+                default:
+                    // no
+                    break;
+                case VANILLA:
+                    mc.thePlayer.motionY = 0.42f;
+                    break;
+                case VULCAN:
+                    if (mc.thePlayer.fallDistance > 0) {
+                        mc.thePlayer.motionY = 0.53f;
+                        mc.thePlayer.fallDistance = 0;
+                    }
+                    break;
+            }
+        }
+
         if(e.direction.equals(Direction.PRE)){
             targetBlock = new BlockPos(Math.floor(mc.thePlayer.posX), keepy.getValue() ? startY : Math.floor(mc.thePlayer.posY - 1 - (downwardSetting.getValue() && Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) ? 0.5 : 0)), Math.floor(mc.thePlayer.posZ));
             if(downwardSetting.getValue())
@@ -58,6 +85,7 @@ public class Scaffold extends Module {
     }
 
     boolean attemptPlaceBlock(BlockPos pos, boolean attemptSides){
+
         BlockPos toPlaceOf = pos;
         EnumFacing direction = EnumFacing.NORTH;
         boolean cont = mc.theWorld.isAirBlock(pos);
@@ -80,13 +108,12 @@ public class Scaffold extends Module {
                 }
             }
             return false;
-        }else {
+        } else {
             ItemStack item = mc.thePlayer.getHeldItem();
 
             PacketUtil.sendPacketNoEvent(new C08PacketPlayerBlockPlacement(toPlaceOf, direction.getOpposite().getIndex(), item, 0, 0, 0));
             item.onItemUse(mc.thePlayer, mc.theWorld, pos, direction.getOpposite(), 0, 0, 0);
             PacketUtil.sendPacketNoEvent(new C0APacketAnimation());
-
 
             return true;
         }

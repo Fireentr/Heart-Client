@@ -93,6 +93,6 @@ public class VerusDamage extends Mode {
         roundedRectShader.drawRectWithShader((sr.getScaledWidth() / 2f) - 54, sr.getScaledHeight() - 90, 104, 12, 1, 5, new Color(0, 0, 0, 180), new Color(50, 50, 50, 200));
         roundedRectShader.drawRectWithShader((sr.getScaledWidth() / 2f) - 52, sr.getScaledHeight() - 88, width, 8, 1, 3, hud.getColor(1, 1), hud.getColor(1, 1));
         GlStateManager.popAttrib();
-        fontRenderer.drawString(100 - ticks / 2 + "%", (sr.getScaledWidth() / 2f) - textWidth / 2, sr.getScaledHeight() - 90, 0xb0ffffff);
+        fontRenderer.drawString(100 - ticks / 2 + "%", (sr.getScaledWidth() / 2f) - textWidth / 2, sr.getScaledHeight() - 89, 0xb0ffffff);
     }
 }

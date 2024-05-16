@@ -4,17 +4,14 @@ import heart.Heart;
 import heart.events.impl.Render2DEvent;
 import heart.modules.Category;
 import heart.modules.Module;
-import heart.modules.ModuleManager;
 import heart.modules.settings.Requirement;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.ColorSetting;
 import heart.modules.settings.impl.EnumSetting;
 import heart.util.CFontRenderer;
 import heart.util.ColorUtil;
-import heart.util.PacketUtil;
 import heart.util.animation.DynamicAnimation;
 import heart.util.animation.EasingStyle;
-import heart.util.shader.Shader;
 import heart.util.shader.impl.DropshadowShader;
 import heart.util.shader.impl.RoundedRectShader;
 import net.minecraft.client.Minecraft;
@@ -37,7 +34,7 @@ enum colorOptions {
     STATIC, WAVE, DUAL, RAINBOW, ASTOLFO
 }
 
-enum animationOptions {
+enum arraylistAnimation {
     DEFAULT, NONE, LINEAR, NOVOLINE
 }
 
@@ -89,7 +86,7 @@ public class Hud extends Module {
     EnumSetting<watermarkOptions> watermark = (EnumSetting<watermarkOptions>) new EnumSetting<>("Watermark Mode", "Sets the client watermark.", watermarkOptions.values()).addRequirement(new Requirement(watermarkBool, true));
 
     EnumSetting<colorOptions> color = new EnumSetting<>("Color Mode", "Sets the huds color mode.", colorOptions.values());
-    EnumSetting<animationOptions> arraylistAnimation = new EnumSetting<>("Arraylist Animation", "Changes the arraylist animations.", animationOptions.values());
+    EnumSetting<heart.modules.impl.visual.arraylistAnimation> arraylistAnimation = new EnumSetting<>("Arraylist Animation", "Changes the arraylist animations.", heart.modules.impl.visual.arraylistAnimation.values());
 
     ColorSetting color1 = new ColorSetting("Theme Color", "Sets the theme color.", new Color(255, 40, 40));
     ColorSetting color2 = new ColorSetting("Accent Color", "Sets the accent color.", new Color(173, 33, 255));
