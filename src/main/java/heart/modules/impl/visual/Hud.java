@@ -8,6 +8,7 @@ import heart.modules.settings.Requirement;
 import heart.modules.settings.impl.BoolSetting;
 import heart.modules.settings.impl.ColorSetting;
 import heart.modules.settings.impl.EnumSetting;
+import heart.modules.settings.impl.IntSetting;
 import heart.util.CFontRenderer;
 import heart.util.ColorUtil;
 import heart.util.animation.DynamicAnimation;
@@ -36,6 +37,10 @@ enum colorOptions {
 
 enum arraylistAnimation {
     DEFAULT, NONE, LINEAR, NOVOLINE
+}
+
+enum arraylistLine {
+    NONE, RIGHT, LEFT, WRAP
 }
 
 public class Hud extends Module {
@@ -86,10 +91,17 @@ public class Hud extends Module {
     EnumSetting<watermarkOptions> watermark = (EnumSetting<watermarkOptions>) new EnumSetting<>("Watermark Mode", "Sets the client watermark.", watermarkOptions.values()).addRequirement(new Requirement(watermarkBool, true));
 
     EnumSetting<colorOptions> color = new EnumSetting<>("Color Mode", "Sets the huds color mode.", colorOptions.values());
-    EnumSetting<heart.modules.impl.visual.arraylistAnimation> arraylistAnimation = new EnumSetting<>("Arraylist Animation", "Changes the arraylist animations.", heart.modules.impl.visual.arraylistAnimation.values());
-
     ColorSetting color1 = new ColorSetting("Theme Color", "Sets the theme color.", new Color(255, 40, 40));
     ColorSetting color2 = new ColorSetting("Accent Color", "Sets the accent color.", new Color(173, 33, 255));
+
+    EnumSetting<heart.modules.impl.visual.arraylistLine> arraylistLine = new EnumSetting<>("Arraylist Line", "Changes the arraylist line.", heart.modules.impl.visual.arraylistLine.values());
+
+    BoolSetting arraylistCustomFont = new BoolSetting("Arraylist Custom Font", "Gives the arraylist a custom font.", false);
+    IntSetting arraylistMargin = new IntSetting("Arraylist Margin", "Detaches the arraylist from the corner of the screen.", 0, 15, 0);
+
+    EnumSetting<heart.modules.impl.visual.arraylistAnimation> arraylistAnimation = new EnumSetting<>("Arraylist Animation", "Changes the arraylist animations.", heart.modules.impl.visual.arraylistAnimation.values());
+
+    BoolSetting arraylistBackgroundSetting = new BoolSetting("Arraylist Background", "Draws an background behind the arraylist.", false);
 
     String ClientName = "Heart";
     CFontRenderer fontRenderer = new CFontRenderer(new Font("Product Sans",  Font.PLAIN, 18));
@@ -131,10 +143,12 @@ public class Hud extends Module {
         arraylistModules.sort((o1, o2) -> Float.compare(o2.getWidth(), o1.getWidth()));
 
         float i = 0;
+        int ind = 0;
         for(ArraylistModule module : arraylistModules) {
             module.setYOffset(i);
-            module.draw();
+            module.draw(ind);
             i += module.getHeight();
+            ind++;
         }
         super.onRender2D(e);
     }
@@ -176,7 +190,20 @@ class ArraylistModule {
     }
 
     public float getWidth(){
-        return Heart.getHud().fontRenderer.getWidth(module.getName() + (Objects.equals(module.getSuffix(), "") ? "" : " " + module.getSuffix())) + 2;
+        return ((Hud) Heart.getModuleManager().getModule("hud")).arraylistCustomFont.getValue() ?
+                Heart.getHud().fontRenderer.getWidth(module.getName() + (Objects.equals(module.getSuffix(), "") ? "" : " " + module.getSuffix())) + 2 :
+                Minecraft.getMinecraft().fontRendererObj.getStringWidth(module.getName() + (Objects.equals(module.getSuffix(), "") ? "" : " " + module.getSuffix())) + 4;
+    }
+
+    void drawString(String s, float x, float y, int color) {
+        if (((Hud) Heart.getModuleManager().getModule("hud")).arraylistCustomFont.getValue())
+            Heart.getHud().fontRenderer.drawStringWithShadow(s, x, y, color);
+        else {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x, y, 0);
+            Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(s, 1, 0, color);
+            GlStateManager.popMatrix();
+        }
     }
 
     public float getHeight(){
@@ -187,10 +214,70 @@ class ArraylistModule {
         this.yOffset = yOffset;
     }
 
-    public void draw(){
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+    public void draw(int index){
         animate();
-        Heart.getHud().fontRenderer.drawStringWithShadow(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()), 2 + yOffset, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+        if(module.isEnabled() || !(animationY.getValue() > animationX.targetValue - 1)) {
+            ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+            if (((Hud) Heart.getModuleManager().getModule("hud")).arraylistBackgroundSetting.getValue()) {
+                GlStateManager.enableAlpha();
+                GlStateManager.enableBlend();
+
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((animationX.getValue()), yOffset + ((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue(), 0);
+                Gui.drawRect((int) (sr.getScaledWidth()  - getWidth()), 0, (sr.getScaledWidth()), 12, 0x60000000);
+                GlStateManager.popMatrix();
+            }
+
+
+            Minecraft.getMinecraft().fontRendererObj.drawString(".", -10, -10, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+            drawString(module.getName() + "§7 " + module.getSuffix(), (float) (sr.getScaledWidth() - getWidth() + animationX.getValue()) + 1, 2 + yOffset + ((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue(), ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+            if(((Hud) Heart.getModuleManager().getModule("hud")).arraylistLine.getValue().equals(arraylistLine.RIGHT) || ((Hud) Heart.getModuleManager().getModule("hud")).arraylistLine.getValue().equals(arraylistLine.WRAP)){
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((animationX.getValue()), yOffset + ((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue(), 0);
+                Gui.drawRect((int) (sr.getScaledWidth()), 0, sr.getScaledWidth() + 1, 12, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+                GlStateManager.popMatrix();
+            }
+
+            if(((Hud) Heart.getModuleManager().getModule("hud")).arraylistLine.getValue().equals(arraylistLine.LEFT) || ((Hud) Heart.getModuleManager().getModule("hud")).arraylistLine.getValue().equals(arraylistLine.WRAP)){
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((animationX.getValue()), yOffset + ((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue(), 0);
+                Gui.drawRect((int) (sr.getScaledWidth()  - getWidth() - 1), 0, (int) (sr.getScaledWidth()  - getWidth()), 12, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+                GlStateManager.popMatrix();
+            }
+
+            if(((Hud) Heart.getModuleManager().getModule("hud")).arraylistLine.getValue().equals(arraylistLine.WRAP)){
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((animationX.getValue()), yOffset + ((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue(), 0);
+
+                System.out.println(index + 1 + " | " + (((Hud) Heart.getModuleManager().getModule("hud")).arraylistModules.size()));
+                Gui.drawRect((int) (sr.getScaledWidth() - getWidth() - 1), 12, (int) (sr.getScaledWidth() + getWidth() - getnextsize(index + 1) - getWidth() - 1), 13, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+
+                if(isFirst(index))
+                    Gui.drawRect((int) (sr.getScaledWidth() - getWidth() - 1), -1, (sr.getScaledWidth()) + 1, 0, ((Hud) Heart.getModuleManager().getModule("hud")).getColor((int) yOffset * 10, 1).getRGB());
+
+                GlStateManager.popMatrix();
+            }
+        }
+    }
+
+    int getnextsize(int index){
+        for (int i = index; i < ((Hud) Heart.getModuleManager().getModule("hud")).arraylistModules.size(); i++){
+            if(((Hud) Heart.getModuleManager().getModule("hud")).arraylistModules.get(i).module.isEnabled()){
+                return (int) ((Hud) Heart.getModuleManager().getModule("hud")).arraylistModules.get(i).getWidth();
+            }
+        }
+        return -1;
+    }
+
+    boolean isFirst(int index){
+        for (int i = 0; i < ((Hud) Heart.getModuleManager().getModule("hud")).arraylistModules.size(); i++){
+            if(((Hud) Heart.getModuleManager().getModule("hud")).arraylistModules.get(i).module.isEnabled() && i == index){
+                return true;
+            }else if(((Hud) Heart.getModuleManager().getModule("hud")).arraylistModules.get(i).module.isEnabled()) {
+                return false;
+            }
+        }
+        return false;
     }
 
     void init(){
@@ -210,9 +297,9 @@ class ArraylistModule {
                 animationY.getAnim().setEasing(EasingStyle.ExpoOut);
                 if(this.module.isEnabled()){
                     animationY.setTarget(0);
-                    animationX.setTarget(0);
+                    animationX.setTarget(-((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue());
                 }else {
-                    animationX.setTarget(getWidth());
+                    animationX.setTarget(getWidth() + 4);
                     animationY.setTarget(12);
                 }
                 break;
@@ -221,7 +308,7 @@ class ArraylistModule {
                 animationY.getAnim().setEasing(EasingStyle.Linear);
                 if(this.module.isEnabled()){
                     animationY.setTarget(0);
-                    animationX.setTarget(0);
+                    animationX.setTarget(-((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue());
                 }else {
                     animationX.setTarget(getWidth());
                     animationY.setTarget(12);
@@ -233,9 +320,9 @@ class ArraylistModule {
                 if(this.module.isEnabled()){
                     animationY.setTarget(0);
                     if(animationY.getValue() < 2)
-                        animationX.setTarget(0);
+                        animationX.setTarget(-((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue());
                 }else {
-                    animationX.setTarget(getWidth());
+                    animationX.setTarget(getWidth() + 4);
                     if(animationX.getValue() > animationX.targetValue - 4)
                         animationY.setTarget(12);
                 }
@@ -244,7 +331,7 @@ class ArraylistModule {
                 animationX.getAnim().setEasing(EasingStyle.ExpoOut);
                 animationY.getAnim().setEasing(EasingStyle.ExpoOut);
                 animationY.setTarget(this.module.isEnabled() ? 0 : 12);
-                animationX.setTarget(this.module.isEnabled() ? 0 : getWidth());
+                animationX.setTarget(this.module.isEnabled() ? -((Hud) Heart.getModuleManager().getModule("hud")).arraylistMargin.getValue() : getWidth());
 
                 animationX.snapTo(this.animationX.targetValue);
                 animationY.snapTo(this.animationY.targetValue);

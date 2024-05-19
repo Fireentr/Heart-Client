@@ -39,6 +39,7 @@ public class Killaura extends Module {
     }
 
     DoubleSetting apsSetting = new DoubleSetting("APS", "Sets the killaura's APS/CPS.", 1, 20, 12, 10);
+    DoubleSetting randapsSetting = new DoubleSetting("Randomisation", "Adds randomisation to the APS.", 1, 500, 1, 10);
     DoubleSetting reachSetting = new DoubleSetting("Range", "Sets the KillAura's Range/Reach.", 0, 6, 3, 10);
     EnumSetting<sortingMode> sortingModeSetting = new EnumSetting<>("Sort", "Sets the way entities get sorted.", sortingMode.values());
     EnumSetting<autoBlockMode> autoBlockSetting = new EnumSetting<>("AutoBlock", "AutoBlock Type.", autoBlockMode.values());
@@ -81,7 +82,8 @@ public class Killaura extends Module {
             if(apsSetting.getValue() != 20) {
 
                 System.out.println((timeDelay));
-                clickTimer.scheduleAtFixedRate(timerTask, 0, timeDelay);
+                long rand = (long) (randapsSetting.getValue() * Math.random());
+                clickTimer.scheduleAtFixedRate(timerTask, 0, timeDelay + (-rand/2) + rand);
                 scheduledTasks.add(timerTask);
             }
             i = 0;
